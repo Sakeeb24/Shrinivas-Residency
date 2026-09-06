@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ArrowRight, Phone } from 'lucide-react';
-import { hotel, formatPhone, hotelImages } from '../data/hotel';
+import { hotel, formatPhone, hotelImages, assetUrl } from '../data/hotel';
 import { useScrollReveal } from '../hooks/useHotel';
 
 const About: React.FC = () => {
@@ -128,7 +128,7 @@ const About: React.FC = () => {
             }}
           >
             <img
-              src="/assets/images/gallery/artwork-folk-triptych.jpg"
+              src={assetUrl('/assets/images/gallery/artwork-folk-triptych.jpg')}
               alt="Traditional Indian wall art displayed in Shrinivas Residency corridors"
               loading="lazy"
               style={{

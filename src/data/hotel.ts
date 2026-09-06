@@ -43,6 +43,16 @@ export interface HotelConfig {
   seo: { title: string; description: string; canonicalUrl: string; ogImage: string };
 }
 
+// ── Asset URL Helper ─────────────────────────────────────────
+const base = import.meta.env.BASE_URL || '/';
+export const assetUrl = (path: string): string => {
+  if (!path) return '';
+  if (path.startsWith('http://') || path.startsWith('https://') || path.startsWith('data:')) return path;
+  const cleanBase = base.endsWith('/') ? base : `${base}/`;
+  const cleanPath = path.startsWith('/') ? path.slice(1) : path;
+  return `${cleanBase}${cleanPath}`;
+};
+
 // ── Main Config ───────────────────────────────────────────────
 export const hotel: HotelConfig = {
   name: 'Shrinivas Residency',
@@ -81,13 +91,13 @@ export const hotel: HotelConfig = {
     'https://maps.google.com/maps?q=Shrinivas+Residency%2C+Plot+No.+15-D%2C+Sector+No.+35%2C+Police+Palace+Circle%2C+Navanagar%2C+Bagalkot%2C+Karnataka+587103&t=&z=16&ie=UTF8&iwloc=&output=embed',
 
   // ── Media ─────────────────────────────────────────────────
-  heroImage: '/assets/images/hero.jpg',
-  heroVideo: '/assets/video/hero-video.mp4',
-  mobileHeroVideo: '/assets/video/mobile-hero-video.mp4',
+  heroImage: assetUrl('/assets/images/hero.jpg'),
+  heroVideo: assetUrl('/assets/video/hero-video.mp4'),
+  mobileHeroVideo: assetUrl('/assets/video/mobile-hero-video.mp4'),
 
   // Logo paths — replace files when real logo assets are ready
-  logo: '/assets/images/logo.png',           // Full logo (horizontal/stacked)
-  logoMark: '/assets/images/logo-mark.png',  // SR circular emblem
+  logo: assetUrl('/assets/images/logo.png'),           // Full logo (horizontal/stacked)
+  logoMark: assetUrl('/assets/images/logo-mark.png'),  // SR circular emblem
 
   // ── Social ────────────────────────────────────────────────
   social: {
@@ -112,106 +122,106 @@ export const hotel: HotelConfig = {
     description:
       'Shrinivas Residency in Navanagar, Bagalkot, Karnataka. Find accommodation, contact details, location and stay information.',
     canonicalUrl: 'https://shrinivasresidency.in', // Update to actual domain
-    ogImage: '/assets/images/hero.jpg',
+    ogImage: 'https://shrinivasresidency.in/assets/images/hero.jpg',
   },
 };
 
 // ── Image Registry ────────────────────────────────────────────
 // All image paths in one place. Centralized for components.
 export const hotelImages = {
-  hero: '/assets/images/hero.jpg',
-  about: '/assets/images/about.jpg',
-  cinematic: '/assets/images/cinematic.jpg',
-  logo: '/assets/images/logo.png',
-  logoMark: '/assets/images/logo-mark.png',
+  hero: assetUrl('/assets/images/hero.jpg'),
+  about: assetUrl('/assets/images/about.jpg'),
+  cinematic: assetUrl('/assets/images/cinematic.jpg'),
+  logo: assetUrl('/assets/images/logo.png'),
+  logoMark: assetUrl('/assets/images/logo-mark.png'),
 
   exterior: [
-    '/assets/images/exterior/exterior-1.jpg',
+    assetUrl('/assets/images/exterior/exterior-1.jpg'),
   ],
 
   rooms: {
-    room1: '/assets/images/rooms/room-1.jpg',
-    room2: '/assets/images/rooms/room-2.jpg',
-    room3: '/assets/images/rooms/room-3.jpg',
-    roomWide: '/assets/images/rooms/room-wide.jpg',
-    roomTv: '/assets/images/rooms/room-tv-setup.jpg',
-    roomPerspective: '/assets/images/rooms/room-perspective.jpg',
+    room1: assetUrl('/assets/images/rooms/room-1.jpg'),
+    room2: assetUrl('/assets/images/rooms/room-2.jpg'),
+    room3: assetUrl('/assets/images/rooms/room-3.jpg'),
+    roomWide: assetUrl('/assets/images/rooms/room-wide.jpg'),
+    roomTv: assetUrl('/assets/images/rooms/room-tv-setup.jpg'),
+    roomPerspective: assetUrl('/assets/images/rooms/room-perspective.jpg'),
   },
 
   interior: [
-    '/assets/images/gallery/staircase-foyer.jpg',
-    '/assets/images/gallery/corridor-main.jpg',
+    assetUrl('/assets/images/gallery/staircase-foyer.jpg'),
+    assetUrl('/assets/images/gallery/corridor-main.jpg'),
   ],
 
   gallery: [
     {
-      src: '/assets/images/rooms/room-1.jpg',
+      src: assetUrl('/assets/images/rooms/room-1.jpg'),
       category: 'Rooms',
       title: 'Deluxe Double Bedroom',
       alt: 'Deluxe double bedroom with vibrant yellow headboard, ambient cove lighting, and fresh linens',
     },
     {
-      src: '/assets/images/exterior/exterior-1.jpg',
+      src: assetUrl('/assets/images/exterior/exterior-1.jpg'),
       category: 'Balcony / Exterior View',
       title: 'Shrinivas Residency Building Facade',
       alt: 'Modern multi-storey exterior facade of Shrinivas Residency at Hebbar Complex, Navanagar, Bagalkot',
     },
     {
-      src: '/assets/images/gallery/corridor-main.jpg',
+      src: assetUrl('/assets/images/gallery/corridor-main.jpg'),
       category: 'Corridors & Common Areas',
       title: 'Warmly Lit Guest Corridor',
       alt: 'Long guest corridor with recessed warm LED ceiling lighting, framed art, and wooden finish flooring',
     },
     {
-      src: '/assets/images/rooms/room-2.jpg',
+      src: assetUrl('/assets/images/rooms/room-2.jpg'),
       category: 'Rooms',
       title: 'Executive Room with SR Embroidery',
       alt: 'Executive guest room featuring embroidered SR pillows, textured accent wall, and tailored roman shades',
     },
     {
-      src: '/assets/images/gallery/balcony-view.jpg',
+      src: assetUrl('/assets/images/gallery/balcony-view.jpg'),
       category: 'Balcony / Exterior View',
       title: 'Panoramic Balcony Overlook',
       alt: 'Curved open-air balcony with polished wooden ceiling and lush planters overlooking Bagalkot at night',
     },
     {
-      src: '/assets/images/gallery/artwork-folk-triptych.jpg',
+      src: assetUrl('/assets/images/gallery/artwork-folk-triptych.jpg'),
       category: 'Artwork',
       title: 'Traditional Folk Art Canvases',
       alt: 'Trio of vibrant vertical folk art paintings adorning the guest room corridor',
     },
     {
-      src: '/assets/images/rooms/room-3.jpg',
+      src: assetUrl('/assets/images/rooms/room-3.jpg'),
       category: 'Rooms',
       title: 'Comfort Double Room',
       alt: 'Symmetrical front view of guest bedroom with geometric bed throw, nightstand, and split AC',
     },
     {
-      src: '/assets/images/gallery/staircase-foyer.jpg',
+      src: assetUrl('/assets/images/gallery/staircase-foyer.jpg'),
       category: 'Interiors',
       title: 'Staircase Landing & Gallery Foyer',
       alt: 'Modern staircase landing with wood-grain flooring, stainless steel railings, and traditional art gallery',
     },
     {
-      src: '/assets/images/gallery/artwork-room-entry.jpg',
+      src: assetUrl('/assets/images/gallery/artwork-room-entry.jpg'),
       category: 'Artwork',
       title: 'Indian Folk Art at Room 106',
       alt: 'Hand-painted Indian folk art featuring fish and royal elephant motifs outside Room 106',
     },
     {
-      src: '/assets/images/rooms/room-wide.jpg',
+      src: assetUrl('/assets/images/rooms/room-wide.jpg'),
       category: 'Rooms',
       title: 'Spacious Room Layout & Seating',
       alt: 'Wide perspective of guest room with relaxing armchair, center table, and elegant wood entryway door',
     },
     {
-      src: '/assets/images/rooms/room-tv-setup.jpg',
+      src: assetUrl('/assets/images/rooms/room-tv-setup.jpg'),
       category: 'Rooms',
       title: 'LED TV & Living Console',
       alt: 'Wall-mounted flat-screen TV with floating wooden console shelf and relaxation chair',
     },
     {
-      src: '/assets/images/rooms/room-perspective.jpg',
+      src: assetUrl('/assets/images/rooms/room-perspective.jpg'),
       category: 'Rooms',
       title: 'Bed Perspective & Room Details',
       alt: 'Perspective view of comfortable double bed with rolled towels and room furnishings',
