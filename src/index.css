@@ -1,0 +1,348 @@
+@import "tailwindcss";
+
+/* ============================================================
+   DESIGN SYSTEM — SHRINIVAS RESIDENCY
+   ============================================================ */
+
+@theme {
+  /* Color Palette */
+  --color-primary: #7A1E1E;
+  --color-primary-dark: #5E1717;
+  --color-charcoal: #172026;
+  --color-secondary: #C99A3E;
+  --color-gold: #C99A3E;
+  --color-gold-light: #E8C472;
+  --color-gold-dark: #A07A28;
+  --color-background: #FAF8F3;
+  --color-surface: #FFFFFF;
+  --color-text: #172026;
+  --color-muted: #6B7280;
+  --color-border: #E8E2D5;
+
+  /* Typography */
+  --font-serif: 'Cormorant Garamond', Georgia, serif;
+  --font-sans: 'Inter', system-ui, sans-serif;
+
+  /* Spacing */
+  --spacing-section: 5rem;
+
+  /* Border Radius */
+  --radius-card: 1rem;
+  --radius-btn: 0.5rem;
+
+  /* Shadows */
+  --shadow-card: 0 4px 24px rgba(11, 31, 42, 0.08);
+  --shadow-card-hover: 0 12px 40px rgba(11, 31, 42, 0.15);
+  --shadow-navbar: 0 2px 20px rgba(11, 31, 42, 0.1);
+}
+
+/* ============================================================
+   BASE STYLES
+   ============================================================ */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background-color: #FAF8F3;
+  color: #172026;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ============================================================
+   UTILITY CLASSES
+   ============================================================ */
+
+/* Typography */
+.font-serif {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+}
+
+.font-sans {
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+/* Section label */
+.section-label {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: #C99A3E;
+}
+
+/* Gold divider */
+.gold-divider {
+  display: block;
+  width: 3rem;
+  height: 2px;
+  background: linear-gradient(90deg, #C99A3E, #E8C472, #C99A3E);
+  margin: 1rem 0;
+}
+
+/* ============================================================
+   ANIMATIONS
+   ============================================================ */
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slowZoom {
+  from { transform: scale(1); }
+  to { transform: scale(1.06); }
+}
+
+@keyframes scrollBounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(6px); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+.animate-fade-up {
+  animation: fadeUp 0.8s ease forwards;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.8s ease forwards;
+}
+
+.animate-slow-zoom {
+  animation: slowZoom 12s ease-in-out infinite alternate;
+}
+
+.animate-scroll-bounce {
+  animation: scrollBounce 2s ease-in-out infinite;
+}
+
+/* Staggered delays */
+.delay-100 { animation-delay: 0.1s; }
+.delay-200 { animation-delay: 0.2s; }
+.delay-300 { animation-delay: 0.3s; }
+.delay-400 { animation-delay: 0.4s; }
+.delay-500 { animation-delay: 0.5s; }
+.delay-600 { animation-delay: 0.6s; }
+.delay-700 { animation-delay: 0.7s; }
+
+/* Initial hidden for reveal animations */
+.reveal-hidden {
+  opacity: 0;
+  transform: translateY(32px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.reveal-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ============================================================
+   BUTTON STYLES
+   ============================================================ */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.875rem 2rem;
+  background-color: #7A1E1E;
+  color: #FFFFFF;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  border: none;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+.btn-primary:hover {
+  background-color: #5E1717;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(122, 30, 30, 0.35);
+}
+
+.btn-primary:focus-visible {
+  outline: 2px solid #7A1E1E;
+  outline-offset: 3px;
+}
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.875rem 2rem;
+  background-color: transparent;
+  color: #FFFFFF;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  border: 1.5px solid rgba(255, 255, 255, 0.6);
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+.btn-secondary:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-color: #FFFFFF;
+  transform: translateY(-1px);
+}
+
+.btn-secondary:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.6);
+  outline-offset: 3px;
+}
+
+.btn-outline {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.75rem;
+  background-color: transparent;
+  color: #0B1F2A;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  border: 1.5px solid #0B1F2A;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+.btn-outline:hover {
+  background-color: #0B1F2A;
+  color: #FFFFFF;
+  transform: translateY(-1px);
+}
+
+.btn-outline:focus-visible {
+  outline: 2px solid #0B1F2A;
+  outline-offset: 3px;
+}
+
+/* ============================================================
+   CARD STYLES
+   ============================================================ */
+.card {
+  background: #FFFFFF;
+  border-radius: 1rem;
+  box-shadow: 0 4px 24px rgba(11, 31, 42, 0.08);
+  overflow: hidden;
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.card:hover {
+  box-shadow: 0 12px 40px rgba(11, 31, 42, 0.15);
+  transform: translateY(-4px);
+}
+
+/* ============================================================
+   IMAGE PLACEHOLDER SYSTEM
+   ============================================================ */
+.img-placeholder {
+  background: linear-gradient(135deg, #E8E2D5 0%, #D4CCC0 50%, #E8E2D5 100%);
+  background-size: 200% 200%;
+  animation: shimmer 3s linear infinite;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ============================================================
+   FOCUS STYLES
+   ============================================================ */
+:focus-visible {
+  outline: 2px solid #C99A3E;
+  outline-offset: 2px;
+}
+
+/* ============================================================
+   CUSTOM SCROLLBAR
+   ============================================================ */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #FAF8F3;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #C99A3E;
+  border-radius: 3px;
+}
+
+/* ============================================================
+   SELECTION COLOR
+   ============================================================ */
+::selection {
+  background-color: rgba(201, 154, 62, 0.2);
+  color: #172026;
+}
+
+/* ============================================================
+   PARALLAX SECTION
+   ============================================================ */
+.parallax-section {
+  position: relative;
+  overflow: hidden;
+  min-height: 500px;
+}
+
+.parallax-bg {
+  position: absolute;
+  inset: -10%;
+  background-size: cover;
+  background-position: center;
+  transition: transform 0.1s linear;
+  will-change: transform;
+}
+
+/* ============================================================
+   LIGHTBOX
+   ============================================================ */
+.lightbox-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.95);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.2s ease;
+}
