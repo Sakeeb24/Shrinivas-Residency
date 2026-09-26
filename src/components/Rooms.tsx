@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Eye, Calendar, X, Check, Phone, Wifi, Tv, Wind, Bed, Bath, Sparkles, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Eye, Calendar, X, Check, Phone, Wifi, Tv, Wind, Bed, Bath, ChevronLeft, ChevronRight } from 'lucide-react';
 import { rooms, hotel, formatPhone } from '../data/hotel';
 import { useScrollReveal } from '../hooks/useHotel';
 import { use3DTilt } from '../hooks/use3D';
@@ -36,7 +36,7 @@ const Rooms: React.FC = () => {
       id="rooms"
       aria-label="Rooms and accommodation at Shrinivas Residency"
       style={{
-        padding: '7rem 1.5rem 6rem',
+        padding: '7rem 1.5rem 6.5rem',
         backgroundColor: '#FFFFFF',
         borderTop: '1px solid var(--color-border-subtle)',
         position: 'relative',
@@ -54,23 +54,26 @@ const Rooms: React.FC = () => {
             className="headline-serif"
             style={{
               fontSize: 'clamp(2.2rem, 4vw, 3.4rem)',
-              color: 'var(--color-charcoal)',
-              maxWidth: '680px',
+              color: '#16191D',
+              maxWidth: '720px',
               margin: '0 auto 1rem',
               letterSpacing: '-0.01em',
+              fontWeight: 600,
             }}
           >
             Rooms Designed for a Comfortable Stay
           </h2>
 
+          {/* High-Contrast Introductory Description (Requirement 11) */}
           <p
             style={{
               fontFamily: 'var(--font-sans)',
-              fontSize: '1rem',
-              color: 'var(--color-text-muted)',
-              maxWidth: '560px',
+              fontSize: '1.05rem',
+              color: '#2C3338',
+              maxWidth: '700px',
               margin: '0 auto',
               lineHeight: 1.65,
+              fontWeight: 450,
             }}
           >
             Each room at Shrinivas Residency is arranged with clean interiors, private amenities, and quiet comfort for your visit in Bagalkot.
@@ -79,14 +82,14 @@ const Rooms: React.FC = () => {
           <span className="gold-hairline gold-hairline-center" style={{ marginTop: '1.25rem' }} />
         </div>
 
-        {/* ── Room Switcher Tabs (Section 13) ─────────────── */}
+        {/* ── Room Switcher Tabs (Requirement 12) ─────────── */}
         <div
           className="reveal-hidden"
           style={{
             display: 'flex',
             justifyContent: 'center',
-            gap: '0.65rem',
-            marginBottom: '3.5rem',
+            gap: '0.75rem',
+            marginBottom: '3.25rem',
             flexWrap: 'wrap',
           }}
           role="tablist"
@@ -103,45 +106,58 @@ const Rooms: React.FC = () => {
                 onClick={() => setActiveIndex(idx)}
                 style={{
                   fontFamily: 'var(--font-sans)',
-                  fontSize: '0.78rem',
+                  fontSize: '0.82rem',
                   fontWeight: 600,
                   letterSpacing: '0.06em',
                   textTransform: 'uppercase',
-                  padding: '0.65rem 1.4rem',
+                  padding: '0.75rem 1.6rem',
                   borderRadius: 'var(--radius-sm)',
-                  border: isActive ? '1px solid var(--color-charcoal)' : '1px solid var(--color-border-subtle)',
-                  backgroundColor: isActive ? 'var(--color-charcoal)' : 'var(--color-surface-cream)',
-                  color: isActive ? '#FFFFFF' : 'var(--color-text-secondary)',
+                  border: isActive ? '1.5px solid #16191D' : '1.5px solid #D8D0C5',
+                  backgroundColor: isActive ? '#16191D' : '#FAF7F2',
+                  color: isActive ? '#FFFFFF' : '#1E2328',
                   cursor: 'pointer',
-                  transition: 'all 0.3s cubic-bezier(0.2, 0, 0.2, 1)',
-                  boxShadow: isActive ? '0 6px 18px rgba(22, 25, 29, 0.18)' : 'none',
+                  transition: 'all 0.25s ease',
+                  boxShadow: isActive ? '0 6px 18px rgba(22, 25, 29, 0.16)' : '0 2px 6px rgba(0, 0, 0, 0.03)',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '0.45rem',
+                  gap: '0.55rem',
+                }}
+                onMouseEnter={(e) => {
+                  if (!isActive) {
+                    e.currentTarget.style.backgroundColor = '#EDE7DC';
+                    e.currentTarget.style.borderColor = '#B8ABA0';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!isActive) {
+                    e.currentTarget.style.backgroundColor = '#FAF7F2';
+                    e.currentTarget.style.borderColor = '#D8D0C5';
+                  }
                 }}
               >
                 <span
                   style={{
-                    color: isActive ? 'var(--color-gold)' : 'var(--color-text-muted)',
-                    fontSize: '0.7rem',
+                    color: isActive ? 'var(--color-gold-light)' : '#8E6C3E',
+                    fontSize: '0.75rem',
+                    fontWeight: 700,
                   }}
                 >
                   0{idx + 1}
                 </span>
-                {room.name}
+                <span>{room.name}</span>
               </button>
             );
           })}
         </div>
 
-        {/* ── Desktop 3D Spatial Room Showcase (Section 13) ──── */}
-        <div className="room-stage-desktop perspective-1500">
+        {/* ── Desktop 3D Spatial Room Showcase (Requirement 5 & 13) ──── */}
+        <div className="room-stage-desktop">
           <div
             style={{
               position: 'relative',
               width: '100%',
-              maxWidth: '960px',
-              height: '560px',
+              maxWidth: '980px',
+              height: '620px',
               margin: '0 auto',
               display: 'flex',
               alignItems: 'center',
@@ -159,21 +175,21 @@ const Rooms: React.FC = () => {
               const isRight = diff === 1;
               const isLeft = diff === -1;
 
-              let transform = 'translate3d(0, 0, 40px) scale(1)';
-              let zIndex = 20;
+              // Subtle gallery perspective as required by Section 5 & 13
+              let transform = 'translate3d(0, 0, 20px) scale(1)';
+              let zIndex = 25;
               let opacity = 1;
-              let filter = 'none';
 
               if (isRight) {
-                transform = 'translate3d(310px, -15px, -80px) scale(0.85) rotateY(-8deg)';
+                // Secondary right card: 94% opacity, crisp text, subtle perspective
+                transform = 'translate3d(325px, 0, -70px) scale(0.88) rotateY(-5deg)';
                 zIndex = 10;
-                opacity = 0.65;
-                filter = 'brightness(0.9)';
+                opacity = 0.94;
               } else if (isLeft) {
-                transform = 'translate3d(-310px, -15px, -80px) scale(0.85) rotateY(8deg)';
+                // Secondary left card: 94% opacity, crisp text, subtle perspective
+                transform = 'translate3d(-325px, 0, -70px) scale(0.88) rotateY(5deg)';
                 zIndex = 10;
-                opacity = 0.65;
-                filter = 'brightness(0.9)';
+                opacity = 0.94;
               }
 
               return (
@@ -185,12 +201,11 @@ const Rooms: React.FC = () => {
                   style={{
                     position: 'absolute',
                     width: '100%',
-                    maxWidth: '560px',
+                    maxWidth: '540px',
                     transform,
                     zIndex,
                     opacity,
-                    filter,
-                    transition: 'all 0.65s cubic-bezier(0.2, 0.8, 0.2, 1)',
+                    transition: 'transform 0.65s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.5s ease',
                     cursor: isActive ? 'default' : 'pointer',
                     willChange: 'transform, opacity',
                   }}
@@ -208,13 +223,13 @@ const Rooms: React.FC = () => {
             })}
           </div>
 
-          {/* Desktop Navigation Arrows */}
+          {/* Desktop Navigation Controls: Prev / 01 / 03 / Next */}
           <div
             style={{
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              gap: '1.25rem',
+              gap: '1.5rem',
               marginTop: '2.5rem',
             }}
           >
@@ -226,9 +241,9 @@ const Rooms: React.FC = () => {
                 width: '46px',
                 height: '46px',
                 borderRadius: '50%',
-                backgroundColor: 'var(--color-surface-cream)',
-                border: '1px solid var(--color-border-subtle)',
-                color: 'var(--color-charcoal)',
+                backgroundColor: '#FAF7F2',
+                border: '1.5px solid #D8D0C5',
+                color: '#16191D',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -237,26 +252,26 @@ const Rooms: React.FC = () => {
                 boxShadow: '0 2px 8px rgba(0, 0, 0, 0.06)',
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = 'var(--color-charcoal)';
+                e.currentTarget.style.backgroundColor = '#16191D';
                 e.currentTarget.style.color = '#FFFFFF';
-                e.currentTarget.style.borderColor = 'var(--color-charcoal)';
+                e.currentTarget.style.borderColor = '#16191D';
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = 'var(--color-surface-cream)';
-                e.currentTarget.style.color = 'var(--color-charcoal)';
-                e.currentTarget.style.borderColor = 'var(--color-border-subtle)';
+                e.currentTarget.style.backgroundColor = '#FAF7F2';
+                e.currentTarget.style.color = '#16191D';
+                e.currentTarget.style.borderColor = '#D8D0C5';
               }}
             >
-              <ChevronLeft size={18} />
+              <ChevronLeft size={20} />
             </button>
 
             <span
               style={{
                 fontFamily: 'var(--font-sans)',
-                fontSize: '0.8rem',
-                fontWeight: 600,
+                fontSize: '0.88rem',
+                fontWeight: 700,
                 letterSpacing: '0.12em',
-                color: 'var(--color-text-muted)',
+                color: '#16191D',
               }}
             >
               0{activeIndex + 1} / 0{rooms.length}
@@ -270,9 +285,9 @@ const Rooms: React.FC = () => {
                 width: '46px',
                 height: '46px',
                 borderRadius: '50%',
-                backgroundColor: 'var(--color-surface-cream)',
-                border: '1px solid var(--color-border-subtle)',
-                color: 'var(--color-charcoal)',
+                backgroundColor: '#FAF7F2',
+                border: '1.5px solid #D8D0C5',
+                color: '#16191D',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -281,22 +296,22 @@ const Rooms: React.FC = () => {
                 boxShadow: '0 2px 8px rgba(0, 0, 0, 0.06)',
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = 'var(--color-charcoal)';
+                e.currentTarget.style.backgroundColor = '#16191D';
                 e.currentTarget.style.color = '#FFFFFF';
-                e.currentTarget.style.borderColor = 'var(--color-charcoal)';
+                e.currentTarget.style.borderColor = '#16191D';
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = 'var(--color-surface-cream)';
-                e.currentTarget.style.color = 'var(--color-charcoal)';
-                e.currentTarget.style.borderColor = 'var(--color-border-subtle)';
+                e.currentTarget.style.backgroundColor = '#FAF7F2';
+                e.currentTarget.style.color = '#16191D';
+                e.currentTarget.style.borderColor = '#D8D0C5';
               }}
             >
-              <ChevronRight size={18} />
+              <ChevronRight size={20} />
             </button>
           </div>
         </div>
 
-        {/* ── Mobile Responsive Carousel (Section 23 & 24) ─── */}
+        {/* ── Mobile Single Room Showcase (Requirement 15) ──────── */}
         <div className="room-stage-mobile">
           <div
             style={{
@@ -304,6 +319,74 @@ const Rooms: React.FC = () => {
               margin: '0 auto',
             }}
           >
+            {/* Mobile Navigation Header: ← 01 / 03 → */}
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                marginBottom: '1.25rem',
+                padding: '0.65rem 1rem',
+                backgroundColor: '#F5F1EB',
+                borderRadius: 'var(--radius-sm)',
+                border: '1px solid #E4DDD1',
+              }}
+            >
+              <button
+                type="button"
+                onClick={handlePrev}
+                aria-label="Previous room"
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  color: '#16191D',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.35rem',
+                  fontSize: '0.82rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  padding: '0.35rem 0.5rem',
+                }}
+              >
+                <ChevronLeft size={18} />
+                <span>Prev</span>
+              </button>
+
+              <span
+                style={{
+                  fontFamily: 'var(--font-sans)',
+                  fontSize: '0.88rem',
+                  fontWeight: 700,
+                  letterSpacing: '0.08em',
+                  color: '#16191D',
+                }}
+              >
+                0{activeIndex + 1} / 0{rooms.length}
+              </span>
+
+              <button
+                type="button"
+                onClick={handleNext}
+                aria-label="Next room"
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  color: '#16191D',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.35rem',
+                  fontSize: '0.82rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  padding: '0.35rem 0.5rem',
+                }}
+              >
+                <span>Next</span>
+                <ChevronRight size={18} />
+              </button>
+            </div>
+
             <SpatialRoomCard
               room={rooms[activeIndex]}
               isActive={true}
@@ -311,48 +394,6 @@ const Rooms: React.FC = () => {
               onViewDetails={() => setSelectedRoom(rooms[activeIndex])}
               onCheckAvailability={handleCheckAvailability}
             />
-
-            {/* Mobile Controls */}
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                marginTop: '1.5rem',
-                padding: '0 0.5rem',
-              }}
-            >
-              <button
-                type="button"
-                onClick={handlePrev}
-                aria-label="Previous room"
-                className="btn-outline-dark"
-                style={{ padding: '0.65rem 1.25rem', fontSize: '0.78rem' }}
-              >
-                <ChevronLeft size={16} /> Prev
-              </button>
-
-              <span
-                style={{
-                  fontFamily: 'var(--font-sans)',
-                  fontSize: '0.8rem',
-                  fontWeight: 600,
-                  color: 'var(--color-text-secondary)',
-                }}
-              >
-                Room 0{activeIndex + 1} of 0{rooms.length}
-              </span>
-
-              <button
-                type="button"
-                onClick={handleNext}
-                aria-label="Next room"
-                className="btn-outline-dark"
-                style={{ padding: '0.65rem 1.25rem', fontSize: '0.78rem' }}
-              >
-                Next <ChevronRight size={16} />
-              </button>
-            </div>
           </div>
         </div>
       </div>
@@ -361,6 +402,7 @@ const Rooms: React.FC = () => {
       <style>{`
         .room-stage-desktop {
           display: block;
+          perspective: 1400px;
         }
         .room-stage-mobile {
           display: none;
@@ -387,6 +429,17 @@ const Rooms: React.FC = () => {
   );
 };
 
+// ── Feature Icon Mapper ───────────────────────────────────────
+const getFeatureIcon = (feature: string) => {
+  const f = feature.toLowerCase();
+  if (f.includes('ac') || f.includes('air')) return <Wind size={13} color="#8E6C3E" strokeWidth={2} />;
+  if (f.includes('bed')) return <Bed size={13} color="#8E6C3E" strokeWidth={2} />;
+  if (f.includes('wi-fi') || f.includes('wifi') || f.includes('internet')) return <Wifi size={13} color="#8E6C3E" strokeWidth={2} />;
+  if (f.includes('bath') || f.includes('water')) return <Bath size={13} color="#8E6C3E" strokeWidth={2} />;
+  if (f.includes('tv')) return <Tv size={13} color="#8E6C3E" strokeWidth={2} />;
+  return <Check size={12} color="#8E6C3E" strokeWidth={2.5} />;
+};
+
 // ── Spatial Room Card Component with Layered 3D Depth ─────────
 interface SpatialRoomCardProps {
   room: RoomItem;
@@ -404,7 +457,8 @@ const SpatialRoomCard: React.FC<SpatialRoomCardProps> = ({
   onCheckAvailability,
 }) => {
   const [imgError, setImgError] = useState(false);
-  const { ref, style, glare, handleMouseMove, handleMouseLeave } = use3DTilt<HTMLElement>(isActive ? 6 : 0, 1000);
+  // Subtle 3D tilt (max 2.5 deg) as required by Section 14
+  const { ref, style, glare, handleMouseMove, handleMouseLeave } = use3DTilt<HTMLElement>(isActive ? 2.5 : 0, 1200);
 
   return (
     <article
@@ -415,13 +469,16 @@ const SpatialRoomCard: React.FC<SpatialRoomCardProps> = ({
         ...style,
         backgroundColor: '#FFFFFF',
         borderRadius: 'var(--radius-lg)',
-        border: isActive ? '1.5px solid var(--color-gold)' : '1px solid var(--color-border-subtle)',
-        boxShadow: isActive ? 'var(--shadow-3d-hover)' : 'var(--shadow-3d-card)',
+        border: isActive ? '2px solid var(--color-gold)' : '1.5px solid #DCD4C7',
+        boxShadow: isActive
+          ? '0 16px 44px -10px rgba(17, 20, 23, 0.18), 0 6px 16px -4px rgba(17, 20, 23, 0.08)'
+          : '0 8px 24px -6px rgba(17, 20, 23, 0.10)',
         overflow: 'hidden',
         display: 'flex',
         flexDirection: 'column',
         position: 'relative',
         transformStyle: 'preserve-3d',
+        transition: 'border-color 0.3s ease, box-shadow 0.3s ease',
       }}
       className="preserve-3d card-hotel-3d"
     >
@@ -440,13 +497,14 @@ const SpatialRoomCard: React.FC<SpatialRoomCardProps> = ({
         />
       )}
 
-      {/* ── Room Photography Container ─────────────────────── */}
+      {/* ── Room Photography Container (approx 45% of card height) ── */}
       <div
         style={{
           position: 'relative',
-          height: '270px',
+          height: '255px',
           overflow: 'hidden',
           backgroundColor: '#1E2328',
+          borderBottom: '1px solid var(--color-border-subtle)',
           cursor: isActive ? 'pointer' : 'default',
         }}
         onClick={isActive ? onViewDetails : undefined}
@@ -461,104 +519,137 @@ const SpatialRoomCard: React.FC<SpatialRoomCardProps> = ({
               width: '100%',
               height: '100%',
               objectFit: 'cover',
+              transition: 'transform 0.5s ease',
             }}
             className="room-card-img"
           />
         ) : (
           <div className="img-placeholder-hotel" style={{ width: '100%', height: '100%' }}>
-            <span style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)' }}>Room Photograph</span>
+            <span style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)' }}>Room Photograph</span>
           </div>
         )}
 
-        {/* Room Index & Category Badge */}
+        {/* Subtle Room Label Badge (Requirement 7) */}
         <div
-          className="layer-z-20 floating-glass-plate"
+          className="layer-z-20"
           style={{
             position: 'absolute',
             top: '1rem',
             left: '1rem',
+            backgroundColor: 'rgba(17, 20, 23, 0.75)',
+            backdropFilter: 'blur(6px)',
+            WebkitBackdropFilter: 'blur(6px)',
             color: '#FFFFFF',
-            padding: '0.35rem 0.85rem',
-            fontSize: '0.68rem',
+            padding: '0.4rem 0.85rem',
+            fontSize: '0.7rem',
             letterSpacing: '0.12em',
             textTransform: 'uppercase',
             fontWeight: 600,
+            borderRadius: '4px',
             display: 'flex',
             alignItems: 'center',
-            gap: '0.45rem',
+            gap: '0.4rem',
             zIndex: 4,
+            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.25)',
           }}
         >
-          <Sparkles size={11} color="var(--color-gold)" />
-          <span>Room {roomNumber}</span>
+          <span>ROOM {roomNumber}</span>
         </div>
 
-        {/* Explore Button on Photo */}
+        {/* Small Secondary Inspect Control (Requirement 8) */}
         {isActive && (
-          <div
-            className="layer-z-20 floating-glass-plate"
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onViewDetails();
+            }}
             style={{
               position: 'absolute',
               top: '1rem',
               right: '1rem',
+              backgroundColor: 'rgba(17, 20, 23, 0.75)',
+              backdropFilter: 'blur(6px)',
+              WebkitBackdropFilter: 'blur(6px)',
               color: '#FFFFFF',
-              padding: '0.35rem 0.75rem',
-              fontSize: '0.65rem',
+              border: '1px solid rgba(255, 255, 255, 0.2)',
+              borderRadius: '4px',
+              padding: '0.4rem 0.8rem',
+              fontSize: '0.68rem',
               letterSpacing: '0.08em',
               textTransform: 'uppercase',
               fontWeight: 500,
               display: 'flex',
               alignItems: 'center',
               gap: '0.35rem',
+              cursor: 'pointer',
               zIndex: 4,
+              boxShadow: '0 2px 8px rgba(0, 0, 0, 0.25)',
+              transition: 'background-color 0.2s ease, border-color 0.2s ease',
             }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = 'rgba(17, 20, 23, 0.95)';
+              e.currentTarget.style.borderColor = 'var(--color-gold)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = 'rgba(17, 20, 23, 0.75)';
+              e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+            }}
+            aria-label={`Inspect ${room.name} details`}
           >
             <Eye size={12} color="var(--color-gold)" />
-            Inspect
-          </div>
+            <span>Inspect</span>
+          </button>
         )}
       </div>
 
-      {/* ── Room Information & Features ────────────────────── */}
+      {/* ── Room Information Panel (Requirement 2 & 3: High-Contrast Solid Canvas) ── */}
       <div
         style={{
-          padding: '1.75rem 1.85rem 1.75rem',
+          padding: '1.85rem 2rem 1.85rem',
           display: 'flex',
           flexDirection: 'column',
           flex: 1,
+          backgroundColor: '#FFFFFF',
         }}
         className="layer-z-10"
       >
+        {/* Room Title: Strong High-Contrast Serif (Requirement 3: 28-34px) */}
         <h3
           className="headline-serif"
           style={{
-            fontSize: '1.55rem',
-            color: 'var(--color-charcoal)',
+            fontSize: 'clamp(1.75rem, 2.3vw, 2.05rem)',
+            color: '#16191D',
             marginBottom: '0.65rem',
             lineHeight: 1.2,
+            fontWeight: 600,
+            letterSpacing: '-0.01em',
           }}
         >
           {room.name}
         </h3>
 
+        {/* Room Description: Dark High-Contrast Charcoal (Requirement 3: 15-17px, line-height 1.65) */}
         <p
           style={{
             fontFamily: 'var(--font-sans)',
-            fontSize: '0.88rem',
-            color: 'var(--color-text-secondary)',
+            fontSize: '1rem',
+            color: '#282F36',
             lineHeight: 1.65,
-            marginBottom: '1.35rem',
+            marginBottom: '1.5rem',
+            fontWeight: 450,
+            maxWidth: '480px',
           }}
         >
           {room.description}
         </p>
 
-        {/* Specification Icons Grid */}
+        {/* Amenity Chips: High-Contrast & Comfortable Size (Requirement 9: 13-14px, 8x12px padding, 7px radius) */}
         <div
           style={{
             display: 'flex',
             flexWrap: 'wrap',
-            gap: '0.45rem',
+            gap: '0.55rem',
             marginBottom: '1.75rem',
           }}
         >
@@ -567,34 +658,31 @@ const SpatialRoomCard: React.FC<SpatialRoomCardProps> = ({
               key={feature}
               style={{
                 fontFamily: 'var(--font-sans)',
-                fontSize: '0.72rem',
-                color: 'var(--color-charcoal)',
-                backgroundColor: 'var(--color-surface-cream)',
-                border: '1px solid var(--color-border-subtle)',
-                borderRadius: 'var(--radius-xs)',
-                padding: '0.3rem 0.7rem',
+                fontSize: '0.85rem',
+                color: '#1C2126',
+                backgroundColor: '#F3EFE8',
+                border: '1px solid #DFD8CD',
+                borderRadius: '7px',
+                padding: '8px 13px',
                 fontWeight: 500,
                 display: 'inline-flex',
                 alignItems: 'center',
-                gap: '0.35rem',
+                gap: '0.45rem',
+                lineHeight: 1.2,
               }}
             >
-              {feature.includes('AC') || feature.includes('Air') ? <Wind size={11} color="var(--color-gold-dark)" /> :
-               feature.includes('Bed') ? <Bed size={11} color="var(--color-gold-dark)" /> :
-               feature.includes('Wi-Fi') ? <Wifi size={11} color="var(--color-gold-dark)" /> :
-               feature.includes('Bathroom') || feature.includes('Water') ? <Bath size={11} color="var(--color-gold-dark)" /> :
-               feature.includes('TV') ? <Tv size={11} color="var(--color-gold-dark)" /> : null}
-              {feature}
+              {getFeatureIcon(feature)}
+              <span>{feature}</span>
             </span>
           ))}
         </div>
 
-        {/* Actions Bar */}
+        {/* Actions Bar (Requirement 10: Clear Visual Hierarchy) */}
         <div
           style={{
             marginTop: 'auto',
             paddingTop: '1.25rem',
-            borderTop: '1px solid var(--color-border-subtle)',
+            borderTop: '1px solid #E8E2D7',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
@@ -607,22 +695,28 @@ const SpatialRoomCard: React.FC<SpatialRoomCardProps> = ({
             style={{
               background: 'none',
               border: 'none',
-              padding: '0.4rem 0',
+              padding: '0.55rem 0',
               fontFamily: 'var(--font-sans)',
-              fontSize: '0.78rem',
-              fontWeight: 600,
-              letterSpacing: '0.06em',
+              fontSize: '0.82rem',
+              fontWeight: 700,
+              letterSpacing: '0.08em',
               textTransform: 'uppercase',
-              color: 'var(--color-charcoal)',
+              color: '#16191D',
               cursor: 'pointer',
-              borderBottom: '1px solid var(--color-gold)',
+              borderBottom: '2px solid var(--color-gold)',
               transition: 'all 0.2s ease',
               display: 'inline-flex',
               alignItems: 'center',
-              gap: '0.35rem',
+              gap: '0.4rem',
             }}
-            onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--color-gold-dark)')}
-            onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--color-charcoal)')}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.color = 'var(--color-gold-dark)';
+              e.currentTarget.style.borderColor = 'var(--color-gold-dark)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.color = '#16191D';
+              e.currentTarget.style.borderColor = 'var(--color-gold)';
+            }}
           >
             Room Details
           </button>
@@ -632,11 +726,15 @@ const SpatialRoomCard: React.FC<SpatialRoomCardProps> = ({
             onClick={onCheckAvailability}
             className="btn-gold-solid"
             style={{
-              padding: '0.65rem 1.25rem',
-              fontSize: '0.75rem',
+              padding: '0.75rem 1.45rem',
+              fontSize: '0.82rem',
+              fontWeight: 600,
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.45rem',
             }}
           >
-            <Calendar size={13} />
+            <Calendar size={14} strokeWidth={2} />
             Check Availability
           </a>
         </div>
@@ -733,7 +831,7 @@ const RoomModal: React.FC<RoomModalProps> = ({ room, onClose, onCheckAvailabilit
             >
               Accommodation Specifications
             </span>
-            <h3 className="headline-serif" style={{ fontSize: '1.75rem', color: '#FFFFFF' }}>
+            <h3 className="headline-serif" style={{ fontSize: '1.85rem', color: '#FFFFFF', fontWeight: 600 }}>
               {room.name}
             </h3>
           </div>
@@ -744,10 +842,11 @@ const RoomModal: React.FC<RoomModalProps> = ({ room, onClose, onCheckAvailabilit
           <p
             style={{
               fontFamily: 'var(--font-sans)',
-              fontSize: '0.96rem',
-              color: 'var(--color-text-secondary)',
+              fontSize: '1rem',
+              color: '#282F36',
               lineHeight: 1.7,
               marginBottom: '1.75rem',
+              fontWeight: 450,
             }}
           >
             {room.description}
@@ -756,11 +855,11 @@ const RoomModal: React.FC<RoomModalProps> = ({ room, onClose, onCheckAvailabilit
           <h4
             style={{
               fontFamily: 'var(--font-sans)',
-              fontSize: '0.78rem',
-              fontWeight: 600,
+              fontSize: '0.82rem',
+              fontWeight: 700,
               letterSpacing: '0.1em',
               textTransform: 'uppercase',
-              color: 'var(--color-charcoal)',
+              color: '#16191D',
               marginBottom: '1rem',
             }}
           >
@@ -783,14 +882,15 @@ const RoomModal: React.FC<RoomModalProps> = ({ room, onClose, onCheckAvailabilit
                   alignItems: 'center',
                   gap: '0.6rem',
                   fontFamily: 'var(--font-sans)',
-                  fontSize: '0.85rem',
-                  color: 'var(--color-text-secondary)',
+                  fontSize: '0.88rem',
+                  color: '#1C2126',
+                  fontWeight: 500,
                 }}
               >
                 <div
                   style={{
-                    width: '18px',
-                    height: '18px',
+                    width: '20px',
+                    height: '20px',
                     borderRadius: '50%',
                     backgroundColor: 'var(--color-gold-bg)',
                     display: 'flex',
@@ -799,7 +899,7 @@ const RoomModal: React.FC<RoomModalProps> = ({ room, onClose, onCheckAvailabilit
                     flexShrink: 0,
                   }}
                 >
-                  <Check size={11} color="var(--color-gold-dark)" strokeWidth={2.5} />
+                  <Check size={12} color="var(--color-gold-dark)" strokeWidth={2.5} />
                 </div>
                 <span>{feature}</span>
               </div>
