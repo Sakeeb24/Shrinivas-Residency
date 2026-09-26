@@ -1,68 +1,43 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { hotelImages } from '../data/hotel';
+import { useScrollReveal } from '../hooks/useHotel';
+import { useParallax } from '../hooks/use3D';
 
 const CinematicSection: React.FC = () => {
-  const sectionRef = useRef<HTMLDivElement>(null);
-  const bgRef = useRef<HTMLDivElement>(null);
+  useScrollReveal();
   const [imgError, setImgError] = useState(false);
-  const [visible, setVisible] = useState(false);
-
-  // Parallax effect
-  useEffect(() => {
-    const handleScroll = () => {
-      if (!sectionRef.current || !bgRef.current) return;
-      const rect = sectionRef.current.getBoundingClientRect();
-      const windowH = window.innerHeight;
-      if (rect.bottom < 0 || rect.top > windowH) return;
-
-      const progress = 1 - (rect.bottom / (windowH + rect.height));
-      const offset = progress * 80 - 40; // -40 to +40px
-      bgRef.current.style.transform = `translateY(${offset}px) scale(1.12)`;
-    };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  // Reveal animation
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setVisible(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.2 }
-    );
-    if (sectionRef.current) observer.observe(sectionRef.current);
-    return () => observer.disconnect();
-  }, []);
+  const { elementRef, offset } = useParallax(0.18);
 
   return (
     <section
-      ref={sectionRef}
-      aria-label="Cinematic property showcase"
+      ref={elementRef}
+      aria-label="Atmospheric hotel showcase"
       style={{
         position: 'relative',
-        height: '520px',
+        height: '560px',
+        width: '100%',
         overflow: 'hidden',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
+        backgroundColor: '#111417',
       }}
+      className="perspective-1000"
     >
-      {/* ── Background ──────────────────────────────────── */}
+      {/* ── Parallax Background Photography (Section 12) ──── */}
       <div
-        ref={bgRef}
+        aria-hidden="true"
         style={{
           position: 'absolute',
-          inset: '-10%',
+          top: '-15%',
+          left: 0,
+          right: 0,
+          height: '130%',
+          zIndex: 0,
+          transform: `translate3d(0, ${offset}px, 0) scale(1.05)`,
           transition: 'transform 0.1s linear',
           willChange: 'transform',
-          transform: 'scale(1.12)',
         }}
-        aria-hidden="true"
       >
         {!imgError ? (
           <img
@@ -74,7 +49,8 @@ const CinematicSection: React.FC = () => {
               width: '100%',
               height: '100%',
               objectFit: 'cover',
-              filter: 'brightness(0.65)',
+              objectPosition: 'center center',
+              filter: 'brightness(0.75) contrast(1.06)',
             }}
           />
         ) : (
@@ -82,110 +58,78 @@ const CinematicSection: React.FC = () => {
             style={{
               width: '100%',
               height: '100%',
-              background: 'linear-gradient(145deg, #0B1F2A 0%, #1A3A4A 50%, #0D2535 100%)',
+              background: 'linear-gradient(135deg, #111417 0%, #1E2328 100%)',
             }}
           />
         )}
       </div>
 
-      {/* ── Gradient Overlay ────────────────────────────── */}
+      {/* ── Subtle Translucent Shading & Vignette ─────────────── */}
       <div
         aria-hidden="true"
         style={{
           position: 'absolute',
           inset: 0,
-          background:
-            'linear-gradient(to bottom, rgba(11,31,42,0.4) 0%, rgba(11,31,42,0.6) 100%)',
+          zIndex: 1,
+          background: `
+            linear-gradient(to bottom, rgba(17, 20, 23, 0.5) 0%, rgba(17, 20, 23, 0.65) 100%),
+            radial-gradient(ellipse at center, rgba(17, 20, 23, 0.15) 0%, rgba(17, 20, 23, 0.75) 100%)
+          `,
         }}
       />
 
-      {/* ── Content ─────────────────────────────────────── */}
+      {/* ── 3D Floating Minimal Editorial Statement ─────────── */}
       <div
+        className="reveal-hidden preserve-3d"
         style={{
           position: 'relative',
-          zIndex: 1,
+          zIndex: 2,
           textAlign: 'center',
           padding: '0 1.5rem',
-          opacity: visible ? 1 : 0,
-          transform: visible ? 'translateY(0)' : 'translateY(30px)',
-          transition: 'opacity 0.9s ease, transform 0.9s ease',
+          maxWidth: '840px',
+          transform: 'translateZ(35px)',
         }}
       >
-        {/* Decorative top line */}
+        {/* Small Label */}
         <div
-          aria-hidden="true"
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: '1rem',
-            marginBottom: '1.5rem',
-          }}
+          className="section-eyebrow section-eyebrow-dark with-lines"
+          style={{ justifyContent: 'center', marginBottom: '1.25rem' }}
         >
-          <span
-            style={{
-              display: 'block',
-              width: '3rem',
-              height: '1px',
-              background: 'rgba(201,154,62,0.6)',
-            }}
-          />
-          <span
-            style={{
-              fontSize: '0.6rem',
-              letterSpacing: '0.3em',
-              textTransform: 'uppercase',
-              color: '#C99A3E',
-              fontFamily: 'Inter, sans-serif',
-              fontWeight: 600,
-            }}
-          >
-            Experience
-          </span>
-          <span
-            style={{
-              display: 'block',
-              width: '3rem',
-              height: '1px',
-              background: 'rgba(201,154,62,0.6)',
-            }}
-          />
+          <span>A PHYSICAL SANCTUARY</span>
         </div>
 
+        {/* Large Statement as specified in Section 16 */}
         <h2
-          className="font-serif"
+          className="headline-serif"
           style={{
-            fontSize: 'clamp(2.5rem, 6vw, 4rem)',
-            fontWeight: 700,
+            fontSize: 'clamp(2.8rem, 6.5vw, 5.2rem)',
             color: '#FFFFFF',
-            lineHeight: 1.15,
-            marginBottom: '1rem',
-            textShadow: '0 2px 20px rgba(0,0,0,0.4)',
+            lineHeight: 1.1,
+            letterSpacing: '0.04em',
+            textShadow: '0 4px 35px rgba(0, 0, 0, 0.65)',
+            textTransform: 'uppercase',
           }}
         >
-          Your Stay,
+          ARRIVE.
           <br />
-          <span
-            style={{
-              color: '#C99A3E',
-              fontStyle: 'italic',
-            }}
-          >
-            Your Comfort
+          UNWIND.
+          <br />
+          <span style={{ color: 'var(--color-gold-light)', fontStyle: 'italic' }}>
+            STAY.
           </span>
         </h2>
-
         <p
           style={{
-            fontFamily: 'Inter, sans-serif',
+            fontFamily: 'var(--font-sans)',
             fontSize: '1rem',
-            color: 'rgba(255,255,255,0.75)',
-            maxWidth: '420px',
-            margin: '0 auto',
-            lineHeight: 1.7,
+            color: 'rgba(255, 255, 255, 0.85)',
+            letterSpacing: '0.12em',
+            textTransform: 'uppercase',
+            marginTop: '1.5rem',
+            fontWeight: 500,
           }}
         >
-          A welcoming home away from home in the heart of Bagalkot.
+          Navanagar · Bagalkot · Karnataka
         </p>
       </div>
     </section>

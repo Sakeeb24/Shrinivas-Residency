@@ -1,117 +1,74 @@
-import React, { useState } from 'react';
-import { Menu, X, Phone } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Menu, X, Phone, Calendar } from 'lucide-react';
 import { useScrollY } from '../hooks/useHotel';
 import { hotel, formatPhone } from '../data/hotel';
 
 const navLinks = [
-  { label: 'Home',      href: '#home' },
-  { label: 'About',     href: '#about' },
-  { label: 'Rooms',     href: '#rooms' },
+  { label: 'Rooms', href: '#rooms' },
+  { label: 'Experience', href: '#introduction' },
   { label: 'Amenities', href: '#amenities' },
-  { label: 'Gallery',   href: '#gallery' },
-  { label: 'Location',  href: '#location' },
-  { label: 'Contact',   href: '#contact' },
+  { label: 'Gallery', href: '#gallery' },
+  { label: 'Location', href: '#location' },
+  { label: 'Contact', href: '#contact' },
 ];
-
-// ── SR Logo Mark (text fallback until real logo is provided) ─
-const SrLogoMark: React.FC<{ isScrolled: boolean }> = ({ isScrolled }) => {
-  const [logoError, setLogoError] = useState(true); // Start true = use fallback until file confirmed
-
-  if (!logoError) {
-    return (
-      <img
-        src={hotel.logoMark}
-        alt=""
-        aria-hidden="true"
-        onError={() => setLogoError(true)}
-        style={{ width: '36px', height: '36px', objectFit: 'contain' }}
-      />
-    );
-  }
-
-  // Text-based SR emblem fallback
-  return (
-    <div
-      aria-hidden="true"
-      style={{
-        width: '36px',
-        height: '36px',
-        borderRadius: '50%',
-        border: `2px solid ${isScrolled ? '#7A1E1E' : 'rgba(255,255,255,0.7)'}`,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        flexShrink: 0,
-        transition: 'border-color 0.4s ease',
-      }}
-    >
-      <span
-        style={{
-          fontFamily: 'Cormorant Garamond, Georgia, serif',
-          fontSize: '0.85rem',
-          fontWeight: 700,
-          letterSpacing: '0.04em',
-          color: isScrolled ? '#7A1E1E' : 'rgba(255,255,255,0.9)',
-          lineHeight: 1,
-          transition: 'color 0.4s ease',
-        }}
-      >
-        SR
-      </span>
-    </div>
-  );
-};
 
 const Navbar: React.FC = () => {
   const scrollY = useScrollY();
-  const [menuOpen, setMenuOpen] = useState(false);
-  const isScrolled = scrollY > 60;
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const isScrolled = scrollY > 40;
 
-  const scrollTo = (href: string) => {
-    setMenuOpen(false);
-    const el = document.querySelector(href);
-    if (el) {
-      const top = el.getBoundingClientRect().top + window.scrollY - 72;
+  // Prevent background scroll when mobile menu is open
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [mobileMenuOpen]);
+
+  const scrollToSection = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    e.preventDefault();
+    setMobileMenuOpen(false);
+    const target = document.querySelector(href);
+    if (target) {
+      const navHeight = 76;
+      const top = target.getBoundingClientRect().top + window.scrollY - navHeight;
       window.scrollTo({ top, behavior: 'smooth' });
     }
   };
 
-  const handleBook = (e: React.MouseEvent) => {
+  const handleCheckAvailability = (e: React.MouseEvent) => {
     e.preventDefault();
+    setMobileMenuOpen(false);
     if (hotel.bookingUrl) {
       window.open(hotel.bookingUrl, '_blank', 'noopener,noreferrer');
     } else {
-      scrollTo('#contact');
+      const contactSection = document.querySelector('#contact');
+      if (contactSection) {
+        contactSection.scrollIntoView({ behavior: 'smooth' });
+      }
     }
   };
-
-  const handleCall = () => {
-    if (hotel.phonePrimary) {
-      window.location.href = `tel:${hotel.phonePrimary}`;
-    }
-  };
-
-  const navBg = isScrolled
-    ? 'rgba(250,248,243,0.97)'
-    : 'transparent';
-
-  const textColor = isScrolled ? '#172026' : 'rgba(255,255,255,0.92)';
 
   return (
     <>
-      <nav
-        role="navigation"
-        aria-label="Main navigation"
+      <header
+        role="banner"
         style={{
           position: 'fixed',
           top: 0,
           left: 0,
           right: 0,
-          zIndex: 100,
-          backgroundColor: navBg,
+          zIndex: 90,
+          backgroundColor: isScrolled ? 'rgba(250, 248, 245, 0.96)' : 'transparent',
           backdropFilter: isScrolled ? 'blur(12px)' : 'none',
-          boxShadow: isScrolled ? '0 1px 0 rgba(11,31,42,0.08), 0 4px 20px rgba(11,31,42,0.06)' : 'none',
-          transition: 'background-color 0.4s ease, box-shadow 0.4s ease',
+          WebkitBackdropFilter: isScrolled ? 'blur(12px)' : 'none',
+          borderBottom: isScrolled ? '1px solid rgba(232, 226, 215, 0.9)' : '1px solid transparent',
+          boxShadow: isScrolled ? '0 4px 20px rgba(22, 25, 29, 0.05)' : 'none',
+          transition: 'background-color 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease',
         }}
       >
         <div
@@ -122,280 +79,322 @@ const Navbar: React.FC = () => {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            height: isScrolled ? '68px' : '80px',
+            height: isScrolled ? '70px' : '82px',
             transition: 'height 0.3s ease',
           }}
         >
-          {/* ── Logo ──────────────────────────────────────── */}
+          {/* ── Brand Logo / SR Mark ──────────────────────────── */}
           <a
             href="#home"
-            onClick={(e) => { e.preventDefault(); scrollTo('#home'); }}
-            style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.75rem' }}
+            onClick={(e) => scrollToSection(e, '#home')}
+            style={{
+              textDecoration: 'none',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.85rem',
+            }}
             aria-label="Shrinivas Residency — Home"
           >
-            <SrLogoMark isScrolled={isScrolled} />
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1px' }}>
+            {/* SR Emblem Badge */}
+            <div
+              style={{
+                width: '40px',
+                height: '40px',
+                borderRadius: '6px',
+                border: isScrolled ? '1px solid var(--color-gold)' : '1px solid rgba(197, 168, 128, 0.7)',
+                backgroundColor: isScrolled ? 'rgba(197, 168, 128, 0.08)' : 'rgba(22, 25, 29, 0.35)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexShrink: 0,
+                transition: 'all 0.3s ease',
+              }}
+            >
               <span
-                className="font-serif"
                 style={{
-                  fontSize: '1.15rem',
-                  fontWeight: 700,
-                  letterSpacing: '0.03em',
-                  color: isScrolled ? '#172026' : '#FFFFFF',
-                  lineHeight: 1.1,
-                  transition: 'color 0.4s ease',
+                  fontFamily: 'var(--font-serif)',
+                  fontSize: '1rem',
+                  fontWeight: 600,
+                  letterSpacing: '0.04em',
+                  color: isScrolled ? 'var(--color-charcoal)' : '#FFFFFF',
+                  lineHeight: 1,
                 }}
               >
-                Shrinivas
+                SR
+              </span>
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              <span
+                style={{
+                  fontFamily: 'var(--font-serif)',
+                  fontSize: '1.2rem',
+                  fontWeight: 600,
+                  letterSpacing: '0.03em',
+                  color: isScrolled ? 'var(--color-charcoal)' : '#FFFFFF',
+                  lineHeight: 1.15,
+                  transition: 'color 0.3s ease',
+                }}
+              >
+                Shrinivas Residency
               </span>
               <span
                 style={{
-                  fontSize: '0.55rem',
-                  fontWeight: 600,
-                  letterSpacing: '0.28em',
+                  fontFamily: 'var(--font-sans)',
+                  fontSize: '0.62rem',
+                  fontWeight: 500,
+                  letterSpacing: '0.18em',
                   textTransform: 'uppercase',
-                  color: isScrolled ? '#7A1E1E' : 'rgba(255,255,255,0.7)',
+                  color: isScrolled ? 'var(--color-gold-dark)' : 'rgba(197, 168, 128, 0.9)',
                   lineHeight: 1,
-                  transition: 'color 0.4s ease',
+                  marginTop: '2px',
                 }}
               >
-                Residency
+                Navanagar · Bagalkot
               </span>
             </div>
           </a>
 
-          {/* ── Desktop Nav ───────────────────────────────── */}
-          <div className="nav-desktop" style={{ display: 'flex', alignItems: 'center', gap: '1.75rem' }}>
+          {/* ── Desktop Navigation Links ───────────────────────── */}
+          <nav
+            aria-label="Main Navigation"
+            style={{
+              display: 'none',
+              alignItems: 'center',
+              gap: '2rem',
+            }}
+            className="md-flex"
+          >
             {navLinks.map((link) => (
               <a
                 key={link.href}
                 href={link.href}
-                onClick={(e) => { e.preventDefault(); scrollTo(link.href); }}
-                className="nav-link"
+                onClick={(e) => scrollToSection(e, link.href)}
                 style={{
-                  fontFamily: 'Inter, sans-serif',
-                  fontSize: '0.78rem',
+                  fontFamily: 'var(--font-sans)',
+                  fontSize: '0.82rem',
                   fontWeight: 500,
-                  letterSpacing: '0.06em',
+                  letterSpacing: '0.04em',
                   textTransform: 'uppercase',
-                  color: textColor,
                   textDecoration: 'none',
-                  transition: 'color 0.25s ease',
+                  color: isScrolled ? 'var(--color-text-secondary)' : 'rgba(255, 255, 255, 0.88)',
+                  transition: 'color 0.2s ease',
                   position: 'relative',
-                  paddingBottom: '2px',
+                  padding: '0.35rem 0',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.color = isScrolled ? 'var(--color-gold-dark)' : 'var(--color-gold-light)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.color = isScrolled ? 'var(--color-text-secondary)' : 'rgba(255, 255, 255, 0.88)';
                 }}
               >
                 {link.label}
               </a>
             ))}
-          </div>
+          </nav>
 
-          {/* ── Desktop CTAs ─────────────────────────────── */}
-          <div className="nav-desktop" style={{ display: 'flex', alignItems: 'center', gap: '0.625rem' }}>
-            {/* Call Now */}
+          {/* ── Desktop Actions: Phone + Check Availability ─────── */}
+          <div
+            style={{
+              display: 'none',
+              alignItems: 'center',
+              gap: '1.25rem',
+            }}
+            className="md-flex"
+          >
+            {/* Direct Phone */}
             {hotel.phonePrimary && (
-              <button
-                onClick={handleCall}
-                aria-label={`Call ${formatPhone(hotel.phonePrimary)}`}
+              <a
+                href="tel:+918354350125"
                 style={{
                   display: 'inline-flex',
                   alignItems: 'center',
-                  gap: '0.4rem',
-                  padding: '0.5rem 1rem',
-                  fontFamily: 'Inter, sans-serif',
-                  fontSize: '0.75rem',
-                  fontWeight: 600,
-                  letterSpacing: '0.06em',
-                  textTransform: 'uppercase',
-                  color: isScrolled ? '#172026' : 'rgba(255,255,255,0.9)',
-                  backgroundColor: 'transparent',
-                  border: `1px solid ${isScrolled ? 'rgba(23,32,38,0.2)' : 'rgba(255,255,255,0.35)'}`,
-                  borderRadius: '0.375rem',
-                  cursor: 'pointer',
-                  transition: 'all 0.25s ease',
+                  gap: '0.45rem',
+                  fontFamily: 'var(--font-sans)',
+                  fontSize: '0.82rem',
+                  fontWeight: 500,
+                  letterSpacing: '0.02em',
+                  color: isScrolled ? 'var(--color-charcoal)' : '#FFFFFF',
+                  textDecoration: 'none',
+                  transition: 'color 0.2s ease',
                 }}
+                title="Call Shrinivas Residency directly"
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = isScrolled
-                    ? 'rgba(23,32,38,0.06)'
-                    : 'rgba(255,255,255,0.1)';
+                  e.currentTarget.style.color = 'var(--color-gold)';
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = 'transparent';
+                  e.currentTarget.style.color = isScrolled ? 'var(--color-charcoal)' : '#FFFFFF';
                 }}
               >
-                <Phone size={13} strokeWidth={2} />
-                Call Now
-              </button>
+                <Phone size={15} color="var(--color-gold)" strokeWidth={2} />
+                <span>{formatPhone(hotel.phonePrimary)}</span>
+              </a>
             )}
 
-            {/* Book Your Stay */}
+            {/* Check Availability CTA */}
             <a
-              href={hotel.bookingUrl || '#contact'}
-              onClick={handleBook}
+              href="#contact"
+              onClick={handleCheckAvailability}
+              className="btn-gold-solid"
               style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '0.375rem',
-                padding: '0.5rem 1.125rem',
-                fontFamily: 'Inter, sans-serif',
-                fontSize: '0.75rem',
-                fontWeight: 700,
-                letterSpacing: '0.08em',
-                textTransform: 'uppercase',
-                color: '#FFFFFF',
-                backgroundColor: '#7A1E1E',
-                border: '1px solid #7A1E1E',
-                borderRadius: '0.375rem',
-                textDecoration: 'none',
-                cursor: 'pointer',
-                transition: 'all 0.25s ease',
-                whiteSpace: 'nowrap',
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = '#5E1717';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = '#7A1E1E';
+                padding: '0.65rem 1.4rem',
+                fontSize: '0.78rem',
               }}
             >
-              Book Your Stay
+              <Calendar size={14} />
+              Check Availability
             </a>
           </div>
 
-          {/* ── Mobile Hamburger ─────────────────────────── */}
-          <button
-            className="nav-mobile"
-            onClick={() => setMenuOpen(!menuOpen)}
-            aria-label={menuOpen ? 'Close menu' : 'Open navigation menu'}
-            aria-expanded={menuOpen}
-            style={{
-              background: 'none',
-              border: 'none',
-              cursor: 'pointer',
-              padding: '0.5rem',
-              color: isScrolled ? '#172026' : '#FFFFFF',
-              display: 'none', // shown via CSS
-              transition: 'color 0.3s ease',
-            }}
-          >
-            {menuOpen ? <X size={22} /> : <Menu size={22} />}
-          </button>
-        </div>
-
-        {/* ── Mobile Menu ───────────────────────────────── */}
-        <div
-          className="nav-mobile"
-          style={{
-            position: 'absolute',
-            top: '100%',
-            left: 0,
-            right: 0,
-            backgroundColor: 'rgba(250,248,243,0.98)',
-            backdropFilter: 'blur(16px)',
-            boxShadow: '0 8px 32px rgba(11,31,42,0.1)',
-            overflow: 'hidden',
-            maxHeight: menuOpen ? '600px' : '0',
-            transition: 'max-height 0.38s cubic-bezier(0.4, 0, 0.2, 1)',
-            display: 'none', // shown via CSS
-          }}
-          role="menu"
-          aria-hidden={!menuOpen}
-        >
-          <div style={{ padding: '0.75rem 1.5rem 1.5rem' }}>
-            {navLinks.map((link, i) => (
+          {/* ── Mobile Hamburger Toggle Button ─────────────────── */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }} className="md-hidden">
+            {hotel.phonePrimary && (
               <a
-                key={link.href}
-                href={link.href}
-                onClick={(e) => { e.preventDefault(); scrollTo(link.href); }}
-                role="menuitem"
+                href="tel:+918354350125"
+                aria-label={`Call ${formatPhone(hotel.phonePrimary)}`}
                 style={{
+                  width: '38px',
+                  height: '38px',
+                  borderRadius: '6px',
                   display: 'flex',
                   alignItems: 'center',
-                  justifyContent: 'space-between',
-                  fontFamily: 'Inter, sans-serif',
-                  fontSize: '0.9rem',
-                  fontWeight: 500,
-                  color: '#172026',
+                  justifyContent: 'center',
+                  border: isScrolled ? '1px solid var(--color-border-subtle)' : '1px solid rgba(255,255,255,0.25)',
+                  backgroundColor: isScrolled ? '#FFFFFF' : 'rgba(22, 25, 29, 0.4)',
+                  color: isScrolled ? 'var(--color-charcoal)' : '#FFFFFF',
                   textDecoration: 'none',
-                  padding: '0.75rem 0',
-                  borderBottom: i < navLinks.length - 1 ? '1px solid #E8E2D5' : 'none',
-                  letterSpacing: '0.02em',
                 }}
               >
-                {link.label}
+                <Phone size={16} color="var(--color-gold)" strokeWidth={2} />
               </a>
-            ))}
+            )}
 
-            <div style={{ marginTop: '1.25rem', display: 'flex', flexDirection: 'column', gap: '0.625rem' }}>
-              {hotel.phonePrimary && (
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              aria-label={mobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
+              aria-expanded={mobileMenuOpen}
+              style={{
+                width: '42px',
+                height: '42px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                background: isScrolled ? '#FFFFFF' : 'rgba(22, 25, 29, 0.4)',
+                border: isScrolled ? '1px solid var(--color-border-subtle)' : '1px solid rgba(255,255,255,0.25)',
+                borderRadius: '6px',
+                color: isScrolled ? 'var(--color-charcoal)' : '#FFFFFF',
+                cursor: 'pointer',
+              }}
+            >
+              {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+            </button>
+          </div>
+        </div>
+      </header>
+
+      {/* ── Mobile Navigation Drawer ─────────────────────────── */}
+      {mobileMenuOpen && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label="Navigation drawer"
+          style={{
+            position: 'fixed',
+            inset: 0,
+            zIndex: 85,
+            backgroundColor: 'rgba(17, 20, 23, 0.65)',
+            backdropFilter: 'blur(8px)',
+            WebkitBackdropFilter: 'blur(8px)',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'flex-start',
+            paddingTop: '82px',
+          }}
+          onClick={() => setMobileMenuOpen(false)}
+        >
+          <div
+            style={{
+              backgroundColor: 'var(--color-canvas)',
+              borderBottom: '1px solid var(--color-border-subtle)',
+              padding: '2rem 1.75rem 2.5rem',
+              boxShadow: '0 12px 30px rgba(0,0,0,0.15)',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '1.25rem',
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+              <span className="section-eyebrow" style={{ marginBottom: '0.25rem' }}>
+                Navigation
+              </span>
+              <p style={{ fontFamily: 'var(--font-serif)', fontSize: '1.2rem', color: 'var(--color-charcoal)', fontWeight: 600 }}>
+                Shrinivas Residency
+              </p>
+            </div>
+
+            <nav style={{ display: 'flex', flexDirection: 'column', gap: '0.65rem' }}>
+              {navLinks.map((link) => (
                 <a
-                  href={`tel:${hotel.phonePrimary}`}
+                  key={link.href}
+                  href={link.href}
+                  onClick={(e) => scrollToSection(e, link.href)}
                   style={{
+                    fontFamily: 'var(--font-sans)',
+                    fontSize: '1rem',
+                    fontWeight: 500,
+                    color: 'var(--color-text-primary)',
+                    textDecoration: 'none',
+                    padding: '0.65rem 0',
+                    borderBottom: '1px solid rgba(232, 226, 215, 0.6)',
                     display: 'flex',
                     alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: '0.5rem',
-                    padding: '0.75rem',
-                    fontFamily: 'Inter, sans-serif',
-                    fontSize: '0.875rem',
-                    fontWeight: 600,
-                    color: '#172026',
-                    border: '1px solid #E8E2D5',
-                    borderRadius: '0.5rem',
-                    textDecoration: 'none',
-                    letterSpacing: '0.04em',
+                    justifyContent: 'space-between',
                   }}
                 >
-                  <Phone size={15} />
-                  {formatPhone(hotel.phonePrimary)}
+                  <span>{link.label}</span>
+                  <span style={{ color: 'var(--color-gold)', fontSize: '0.85rem' }}>→</span>
+                </a>
+              ))}
+            </nav>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem', marginTop: '0.5rem' }}>
+              <a
+                href="#contact"
+                onClick={handleCheckAvailability}
+                className="btn-gold-solid"
+                style={{ width: '100%', justifyContent: 'center' }}
+              >
+                <Calendar size={16} />
+                Check Availability
+              </a>
+
+              {hotel.phonePrimary && (
+                <a
+                  href="tel:+918354350125"
+                  className="btn-outline-dark"
+                  style={{ width: '100%', justifyContent: 'center' }}
+                >
+                  <Phone size={15} color="var(--color-gold-dark)" />
+                  Call: {formatPhone(hotel.phonePrimary)}
                 </a>
               )}
-              <a
-                href={hotel.bookingUrl || '#contact'}
-                onClick={handleBook}
-                style={{
-                  display: 'block',
-                  textAlign: 'center',
-                  padding: '0.875rem',
-                  fontFamily: 'Inter, sans-serif',
-                  fontSize: '0.875rem',
-                  fontWeight: 700,
-                  letterSpacing: '0.1em',
-                  textTransform: 'uppercase',
-                  color: '#FFFFFF',
-                  backgroundColor: '#7A1E1E',
-                  borderRadius: '0.5rem',
-                  textDecoration: 'none',
-                }}
-              >
-                Book Your Stay
-              </a>
             </div>
           </div>
         </div>
-      </nav>
+      )}
 
+      {/* Responsive helper styles for header */}
       <style>{`
-        @media (min-width: 960px) {
-          .nav-desktop { display: flex !important; }
-          .nav-mobile  { display: none !important; }
+        @media (min-width: 768px) {
+          .md-flex { display: flex !important; }
+          .md-hidden { display: none !important; }
         }
-        @media (max-width: 959px) {
-          .nav-desktop { display: none !important; }
-          .nav-mobile  { display: block !important; }
+        @media (max-width: 767px) {
+          .md-flex { display: none !important; }
+          .md-hidden { display: flex !important; }
         }
-        .nav-link::after {
-          content: '';
-          position: absolute;
-          bottom: 0;
-          left: 0;
-          width: 0;
-          height: 1px;
-          background: #7A1E1E;
-          transition: width 0.25s ease;
-        }
-        .nav-link:hover { color: #7A1E1E !important; }
-        .nav-link:hover::after { width: 100%; }
       `}</style>
     </>
   );

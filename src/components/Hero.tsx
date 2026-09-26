@@ -1,123 +1,100 @@
-import React, { useRef, useEffect, useState } from 'react';
-import { Star, ChevronDown, Phone, ArrowRight } from 'lucide-react';
+import React, { useState } from 'react';
+import { Phone, Calendar, MapPin, ChevronDown, Star } from 'lucide-react';
 import { hotel, formatPhone } from '../data/hotel';
-import { useIsMobile } from '../hooks/useHotel';
+import { useMouseParallax } from '../hooks/use3D';
 
 const Hero: React.FC = () => {
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const [videoFailed, setVideoFailed] = useState(false);
-  const [imgFailed, setImgFailed] = useState(false);
-  const isMobile = useIsMobile();
+  const [imgLoaded, setImgLoaded] = useState(false);
+  const [imgError, setImgError] = useState(false);
+  const mouse = useMouseParallax(14); // subtle mouse camera parallax
 
-  const useVideo = hotel.heroMediaType === 'VIDEO';
-  const videoSrc = isMobile ? hotel.mobileHeroVideo : hotel.heroVideo;
-
-  useEffect(() => {
-    if (useVideo && videoRef.current) {
-      videoRef.current.load();
+  const handleExplore = (e: React.MouseEvent) => {
+    e.preventDefault();
+    const introSection = document.querySelector('#introduction') || document.querySelector('#about');
+    if (introSection) {
+      introSection.scrollIntoView({ behavior: 'smooth' });
     }
-  }, [useVideo, videoSrc]);
-
-  const handleScrollDown = () => {
-    document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const handleBook = (e: React.MouseEvent) => {
+  const handleCheckAvailability = (e: React.MouseEvent) => {
     e.preventDefault();
     if (hotel.bookingUrl) {
       window.open(hotel.bookingUrl, '_blank', 'noopener,noreferrer');
     } else {
-      document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
+      const contactSection = document.querySelector('#contact');
+      if (contactSection) {
+        contactSection.scrollIntoView({ behavior: 'smooth' });
+      }
     }
   };
 
-  const handleCall = () => {
-    if (hotel.phonePrimary) {
-      window.location.href = `tel:${hotel.phonePrimary}`;
+
+  const handleScrollDown = () => {
+    const introSection = document.querySelector('#introduction') || document.querySelector('#about');
+    if (introSection) {
+      introSection.scrollIntoView({ behavior: 'smooth' });
     }
   };
-
-  const renderStars = () =>
-    Array.from({ length: 5 }, (_, i) => (
-      <Star
-        key={i}
-        size={12}
-        fill={i < Math.floor(hotel.rating) ? '#C99A3E' : 'none'}
-        stroke="#C99A3E"
-        strokeWidth={1.5}
-        style={{ flexShrink: 0 }}
-      />
-    ));
 
   return (
     <section
       id="home"
-      className="hero"
+      aria-label="Welcome to Shrinivas Residency"
+      className="perspective-1500"
       style={{
         position: 'relative',
         width: '100%',
-        height: isMobile ? '100svh' : '100vh',
-        minHeight: isMobile ? '580px' : '640px',
-        overflow: 'hidden',
+        minHeight: '100svh',
         display: 'flex',
-        alignItems: 'center',
+        flexDirection: 'column',
         justifyContent: 'center',
+        overflow: 'hidden',
+        backgroundColor: '#111417',
       }}
-      aria-label="Welcome to Shrinivas Residency"
     >
-      {/* ── Background media ────────────────────────────────── */}
-      {useVideo && !videoFailed ? (
-        <video
-          ref={videoRef}
-          autoPlay
-          muted
-          loop
-          playsInline
-          poster={hotel.heroImage}
-          onError={() => setVideoFailed(true)}
-          style={{
-            position: 'absolute',
-            inset: 0,
-            width: '100%',
-            height: '100%',
-            objectFit: 'cover',
-            zIndex: 0,
-          }}
-          aria-hidden="true"
-        >
-          <source src={videoSrc} type="video/mp4" />
-        </video>
-      ) : (
-        <div
-          aria-hidden="true"
-          style={{ position: 'absolute', inset: 0, zIndex: 0, overflow: 'hidden' }}
-        >
-          {!imgFailed ? (
-            <img
-              src={hotel.heroImage}
-              alt=""
-              onError={() => setImgFailed(true)}
-              style={{
-                width: '100%',
-                height: '100%',
-                objectFit: 'cover',
-                animation: 'slowZoom 16s ease-in-out infinite alternate',
-              }}
-            />
-          ) : (
-            /* Gradient fallback — no broken image icon shown */
-            <div
-              style={{
-                width: '100%',
-                height: '100%',
-                background: 'linear-gradient(160deg, #1A0A0A 0%, #2C1414 35%, #0B1F2A 100%)',
-              }}
-            />
-          )}
-        </div>
-      )}
+      {/* ── Layer 1: Real Property Hero Photography (Dolly / Parallax) ─ */}
+      <div
+        aria-hidden="true"
+        style={{
+          position: 'absolute',
+          inset: '-5%',
+          width: '110%',
+          height: '110%',
+          zIndex: 0,
+          overflow: 'hidden',
+          transform: `translate3d(${-mouse.x * 0.3}px, ${-mouse.y * 0.3}px, 0)`,
+          transition: 'transform 0.2s ease-out',
+        }}
+      >
+        {!imgError ? (
+          <img
+            src={hotel.heroImage}
+            alt="Shrinivas Residency property entrance in Navanagar Bagalkot"
+            onLoad={() => setImgLoaded(true)}
+            onError={() => setImgError(true)}
+            className="animate-cinematic-dolly"
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              objectPosition: 'center 42%',
+              opacity: imgLoaded ? 1 : 0.4,
+              transition: 'opacity 1s ease',
+              filter: 'brightness(0.85) contrast(1.05)',
+            }}
+          />
+        ) : (
+          <div
+            style={{
+              width: '100%',
+              height: '100%',
+              background: 'linear-gradient(135deg, #111417 0%, #1E2328 100%)',
+            }}
+          />
+        )}
+      </div>
 
-      {/* ── Dark Translucent Overlay ───────────────────────── */}
+      {/* ── Layer 2: Cinematic Atmosphere & Vignette Depth ─────── */}
       <div
         aria-hidden="true"
         style={{
@@ -125,309 +102,323 @@ const Hero: React.FC = () => {
           inset: 0,
           zIndex: 1,
           pointerEvents: 'none',
-          background: isMobile
-            ? 'linear-gradient(180deg, rgba(0, 0, 0, 0.65) 0%, rgba(0, 0, 0, 0.45) 45%, rgba(0, 0, 0, 0.75) 100%), linear-gradient(90deg, rgba(0, 0, 0, 0.60) 0%, rgba(0, 0, 0, 0.38) 50%, rgba(0, 0, 0, 0.55) 100%)'
-            : 'linear-gradient(180deg, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0.38) 45%, rgba(0, 0, 0, 0.68) 100%), linear-gradient(90deg, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0.32) 50%, rgba(0, 0, 0, 0.45) 100%)',
+          background: `
+            linear-gradient(to right, rgba(17, 20, 23, 0.94) 0%, rgba(17, 20, 23, 0.72) 48%, rgba(17, 20, 23, 0.4) 100%),
+            linear-gradient(to top, rgba(17, 20, 23, 0.92) 0%, transparent 40%),
+            linear-gradient(to bottom, rgba(17, 20, 23, 0.65) 0%, transparent 25%)
+          `,
         }}
       />
 
-      {/* ── Content ─────────────────────────────────────────── */}
+      {/* ── Layer 3: Main Editorial Content & 3D Spatial Plaque ─── */}
       <div
-        className="hero-content"
         style={{
           position: 'relative',
           zIndex: 2,
-          textAlign: 'center',
-          padding: '0 1.25rem',
-          maxWidth: '820px',
+          maxWidth: '1280px',
           width: '100%',
+          margin: '0 auto',
+          padding: '7.5rem 1.5rem 5rem',
+          display: 'grid',
+          gridTemplateColumns: '1fr',
+          gap: '3rem',
+          alignItems: 'center',
+          transform: `translate3d(${mouse.x * 0.4}px, ${mouse.y * 0.4}px, 0)`,
+          transition: 'transform 0.15s ease-out',
         }}
+        className="hero-grid-desktop"
       >
-        {/* Label */}
-        <div
-          className="animate-fade-up"
-          style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '0.875rem',
-            marginBottom: '1.25rem',
-            opacity: 0,
-            animationFillMode: 'forwards',
-          }}
-        >
-          <span style={{ display: 'block', width: '1.75rem', height: '1px', background: 'rgba(201,154,62,0.85)' }} />
-          <span
+        {/* Left-Aligned Headline & Story */}
+        <div style={{ maxWidth: '700px' }}>
+          {/* Eyebrow */}
+          <div
+            className="section-eyebrow section-eyebrow-dark hero-anim-eyebrow"
+            style={{ marginBottom: '1.25rem' }}
+          >
+            <span>WELCOME TO THE RESIDENCY</span>
+          </div>
+
+          {/* Main Headline (Section 8 Hierarchy) */}
+          <h1
+            className="headline-serif hero-anim-title"
             style={{
-              fontFamily: 'Inter, sans-serif',
-              fontSize: '0.65rem',
+              fontSize: 'clamp(2.8rem, 6.5vw, 5rem)',
               fontWeight: 600,
-              letterSpacing: '0.3em',
+              color: '#FFFFFF',
+              lineHeight: 1.05,
+              letterSpacing: '-0.02em',
+              marginBottom: '1rem',
+              textShadow: '0 4px 30px rgba(0, 0, 0, 0.6)',
               textTransform: 'uppercase',
-              color: '#C99A3E',
-              textShadow: '0 1px 4px rgba(0, 0, 0, 0.4)',
             }}
           >
-            Welcome to
-          </span>
-          <span style={{ display: 'block', width: '1.75rem', height: '1px', background: 'rgba(201,154,62,0.85)' }} />
-        </div>
+            SHRINIVAS
+            <br />
+            <span style={{ color: 'var(--color-gold-light)', fontStyle: 'italic' }}>
+              RESIDENCY
+            </span>
+          </h1>
 
-        {/* Main title */}
-        <h1
-          className="font-serif animate-fade-up delay-200"
-          style={{
-            fontSize: isMobile ? 'clamp(2.4rem, 9vw, 3.2rem)' : 'clamp(2.8rem, 5.5vw, 4.5rem)',
-            fontWeight: 700,
-            color: '#FFFFFF',
-            lineHeight: 1.1,
-            letterSpacing: '0.02em',
-            marginBottom: '0.875rem',
-            opacity: 0,
-            animationFillMode: 'forwards',
-            textShadow: '0 2px 10px rgba(0, 0, 0, 0.55), 0 1px 3px rgba(0, 0, 0, 0.4)',
-          }}
-        >
-          Shrinivas Residency
-        </h1>
+          {/* Supporting Copy */}
+          <p
+            className="hero-anim-subtitle"
+            style={{
+              fontFamily: 'var(--font-sans)',
+              fontSize: 'clamp(1.05rem, 2vw, 1.25rem)',
+              color: 'rgba(255, 255, 255, 0.92)',
+              lineHeight: 1.6,
+              fontWeight: 400,
+              marginBottom: '1.25rem',
+              maxWidth: '560px',
+              textShadow: '0 1px 10px rgba(0,0,0,0.5)',
+            }}
+          >
+            Comfortable stays in Bagalkot
+          </p>
 
-        {/* Subtitle */}
-        <p
-          className="animate-fade-up delay-300"
-          style={{
-            fontFamily: 'Cormorant Garamond, Georgia, serif',
-            fontSize: isMobile ? '1.15rem' : '1.35rem',
-            fontWeight: 400,
-            fontStyle: 'italic',
-            color: 'rgba(255,255,255,0.92)',
-            marginBottom: '0.75rem',
-            opacity: 0,
-            animationFillMode: 'forwards',
-            textShadow: '0 2px 8px rgba(0, 0, 0, 0.4)',
-          }}
-        >
-          {hotel.tagline}
-        </p>
-
-        {/* Description */}
-        <p
-          className="animate-fade-up delay-400"
-          style={{
-            fontFamily: 'Inter, sans-serif',
-            fontSize: '0.92rem',
-            color: 'rgba(255,255,255,0.75)',
-            maxWidth: '480px',
-            margin: '0 auto 2rem',
-            lineHeight: 1.75,
-            opacity: 0,
-            animationFillMode: 'forwards',
-            textShadow: '0 1px 6px rgba(0, 0, 0, 0.4)',
-          }}
-        >
-          {hotel.description}
-        </p>
-
-        {/* CTA Buttons */}
-        <div
-          className="animate-fade-up delay-500"
-          style={{
-            display: 'flex',
-            flexDirection: isMobile ? 'column' : 'row',
-            gap: '0.75rem',
-            justifyContent: 'center',
-            alignItems: 'center',
-            marginBottom: '2rem',
-            opacity: 0,
-            animationFillMode: 'forwards',
-          }}
-        >
-          {/* Primary: Book */}
-          <a
-            href={hotel.bookingUrl || '#contact'}
-            onClick={handleBook}
+          {/* Location Information Badge */}
+          <div
+            className="hero-anim-badge"
             style={{
               display: 'inline-flex',
               alignItems: 'center',
-              justifyContent: 'center',
               gap: '0.5rem',
-              padding: '0.875rem 2rem',
-              backgroundColor: '#7A1E1E',
-              color: '#FFFFFF',
-              fontFamily: 'Inter, sans-serif',
-              fontSize: '0.82rem',
-              fontWeight: 700,
-              letterSpacing: '0.1em',
-              textTransform: 'uppercase',
-              borderRadius: '0.375rem',
-              textDecoration: 'none',
-              border: '1px solid #7A1E1E',
-              transition: 'all 0.25s ease',
-              width: isMobile ? '100%' : 'auto',
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = '#5E1717';
-              e.currentTarget.style.transform = 'translateY(-1px)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = '#7A1E1E';
-              e.currentTarget.style.transform = 'none';
+              padding: '0.45rem 1rem',
+              backgroundColor: 'rgba(255, 255, 255, 0.08)',
+              border: '1px solid rgba(255, 255, 255, 0.2)',
+              borderRadius: 'var(--radius-sm)',
+              marginBottom: '2.25rem',
+              backdropFilter: 'blur(8px)',
+              WebkitBackdropFilter: 'blur(8px)',
+              boxShadow: '0 4px 16px rgba(0, 0, 0, 0.2)',
             }}
           >
-            Book Your Stay
-            <ArrowRight size={15} />
-          </a>
-
-          {/* Secondary: Call Now */}
-          {hotel.phonePrimary ? (
-            <a
-              href={`tel:${hotel.phonePrimary}`}
-              onClick={(e) => { e.preventDefault(); handleCall(); }}
+            <MapPin size={14} color="var(--color-gold)" strokeWidth={2} />
+            <span
               style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '0.5rem',
-                padding: '0.875rem 2rem',
-                backgroundColor: 'transparent',
-                color: '#FFFFFF',
-                fontFamily: 'Inter, sans-serif',
-                fontSize: '0.82rem',
+                fontFamily: 'var(--font-sans)',
+                fontSize: '0.78rem',
                 fontWeight: 600,
-                letterSpacing: '0.08em',
+                letterSpacing: '0.14em',
                 textTransform: 'uppercase',
-                borderRadius: '0.375rem',
-                textDecoration: 'none',
-                border: '1px solid rgba(255,255,255,0.45)',
-                transition: 'all 0.25s ease',
-                width: isMobile ? '100%' : 'auto',
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.1)';
-                e.currentTarget.style.borderColor = 'rgba(255,255,255,0.7)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = 'transparent';
-                e.currentTarget.style.borderColor = 'rgba(255,255,255,0.45)';
+                color: 'rgba(255, 255, 255, 0.95)',
               }}
             >
-              <Phone size={14} strokeWidth={2} />
-              {formatPhone(hotel.phonePrimary)}
+              NAVANAGAR · BAGALKOT
+            </span>
+          </div>
+
+          {/* Primary & Secondary CTAs */}
+          <div
+            className="hero-anim-cta"
+            style={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              gap: '1rem',
+              alignItems: 'center',
+            }}
+          >
+            <a
+              href="#introduction"
+              onClick={handleExplore}
+              className="btn-gold-solid"
+              style={{
+                padding: '1rem 2.25rem',
+                fontSize: '0.85rem',
+                letterSpacing: '0.06em',
+              }}
+            >
+              Explore The Residency
             </a>
-          ) : (
+
             <a
               href="#contact"
-              onClick={(e) => { e.preventDefault(); document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' }); }}
+              onClick={handleCheckAvailability}
+              className="btn-outline-light"
               style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '0.5rem',
-                padding: '0.875rem 2rem',
-                backgroundColor: 'transparent',
-                color: 'rgba(255,255,255,0.85)',
-                fontFamily: 'Inter, sans-serif',
-                fontSize: '0.82rem',
-                fontWeight: 600,
-                letterSpacing: '0.08em',
-                textTransform: 'uppercase',
-                borderRadius: '0.375rem',
-                textDecoration: 'none',
-                border: '1px solid rgba(255,255,255,0.4)',
-                width: isMobile ? '100%' : 'auto',
+                padding: '1rem 2rem',
+                fontSize: '0.85rem',
               }}
             >
-              Contact Us
+              <Calendar size={15} color="var(--color-gold)" />
+              Check Availability
             </a>
-          )}
+          </div>
         </div>
 
-        {/* Rating Badge */}
+        {/* ── Right-Side 3D Floating Plaque (Desktop Entrance Card) ─ */}
         <div
-          className="animate-fade-up delay-600"
+          className="hero-floating-card-desktop"
           style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '0.5rem',
-            backgroundColor: 'rgba(255,255,255,0.08)',
-            backdropFilter: 'blur(8px)',
-            border: '1px solid rgba(201,154,62,0.25)',
-            borderRadius: '2rem',
-            padding: '0.45rem 0.875rem',
-            opacity: 0,
-            animationFillMode: 'forwards',
+            display: 'none',
+            justifyContent: 'flex-end',
+            transform: `translate3d(${mouse.x * 0.8}px, ${mouse.y * 0.8}px, 30px)`,
+            transition: 'transform 0.15s ease-out',
           }}
-          aria-label={`Google Rating: ${hotel.rating} out of 5, ${hotel.reviewCount} reviews`}
         >
-          <div style={{ display: 'flex', gap: '2px', alignItems: 'center' }}>
-            {renderStars()}
+          <div
+            className="floating-glass-plate"
+            style={{
+              padding: '2rem',
+              maxWidth: '360px',
+              width: '100%',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '1.25rem',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem' }}>
+              <div
+                style={{
+                  width: '36px',
+                  height: '36px',
+                  borderRadius: 'var(--radius-xs)',
+                  border: '1px solid var(--color-gold)',
+                  backgroundColor: 'rgba(197, 168, 128, 0.12)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: '#FFFFFF',
+                  fontFamily: 'var(--font-serif)',
+                  fontWeight: 600,
+                  fontSize: '0.95rem',
+                }}
+              >
+                SR
+              </div>
+              <div>
+                <span
+                  style={{
+                    fontFamily: 'var(--font-serif)',
+                    fontSize: '1.1rem',
+                    color: '#FFFFFF',
+                    fontWeight: 600,
+                    lineHeight: 1.1,
+                    display: 'block',
+                  }}
+                >
+                  Shrinivas Residency
+                </span>
+                <span
+                  style={{
+                    fontFamily: 'var(--font-sans)',
+                    fontSize: '0.65rem',
+                    color: 'var(--color-gold-light)',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.12em',
+                  }}
+                >
+                  Police Palace Circle
+                </span>
+              </div>
+            </div>
+
+            {/* Verified Rating Pill */}
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.75rem',
+                padding: '0.75rem 1rem',
+                backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                border: '1px solid rgba(255, 255, 255, 0.12)',
+                borderRadius: 'var(--radius-xs)',
+              }}
+            >
+              <div style={{ display: 'flex', gap: '2px' }}>
+                {Array.from({ length: 5 }, (_, i) => (
+                  <Star key={i} size={13} fill="var(--color-gold)" color="var(--color-gold)" />
+                ))}
+              </div>
+              <span
+                style={{
+                  fontFamily: 'var(--font-sans)',
+                  fontSize: '0.82rem',
+                  fontWeight: 600,
+                  color: '#FFFFFF',
+                }}
+              >
+                4.5 / 5
+              </span>
+              <span style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.6)' }}>
+                ({hotel.reviewCount} Reviews)
+              </span>
+            </div>
+
+            <p style={{ fontFamily: 'var(--font-sans)', fontSize: '0.82rem', color: 'rgba(255,255,255,0.75)', lineHeight: 1.5 }}>
+              Dedicated front desk and comfortable accommodations for business and leisure in Bagalkot.
+            </p>
+
+            <a
+              href="tel:+918354350125"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                color: 'var(--color-gold-light)',
+                fontFamily: 'var(--font-sans)',
+                fontSize: '0.85rem',
+                fontWeight: 600,
+                textDecoration: 'none',
+                borderTop: '1px solid rgba(255, 255, 255, 0.12)',
+                paddingTop: '1rem',
+              }}
+            >
+              <Phone size={14} color="var(--color-gold)" />
+              {formatPhone(hotel.phonePrimary)}
+            </a>
           </div>
-          <span
-            style={{
-              fontFamily: 'Inter, sans-serif',
-              fontSize: '0.82rem',
-              fontWeight: 700,
-              color: '#FFFFFF',
-              lineHeight: 1,
-            }}
-          >
-            {hotel.rating}
-          </span>
-          <span
-            style={{
-              width: '1px',
-              height: '12px',
-              backgroundColor: 'rgba(255,255,255,0.25)',
-              display: 'block',
-            }}
-          />
-          <span
-            style={{
-              fontFamily: 'Inter, sans-serif',
-              fontSize: '0.72rem',
-              color: 'rgba(255,255,255,0.65)',
-              lineHeight: 1,
-            }}
-          >
-            {hotel.reviewCount} Google Reviews
-          </span>
         </div>
       </div>
 
-      {/* ── Scroll indicator ────────────────────────────────── */}
-      <button
-        onClick={handleScrollDown}
-        aria-label="Scroll to about section"
+      {/* ── Layer 4: Discreet Scroll Indicator at Bottom ─────── */}
+      <div
         style={{
           position: 'absolute',
-          bottom: '2rem',
+          bottom: '1.75rem',
           left: '50%',
           transform: 'translateX(-50%)',
-          zIndex: 3,
-          background: 'none',
-          border: 'none',
-          cursor: 'pointer',
+          zIndex: 2,
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          gap: '0.25rem',
-          color: 'rgba(255,255,255,0.5)',
-          padding: '0.5rem',
-          transition: 'color 0.3s ease',
+          gap: '0.35rem',
+          cursor: 'pointer',
         }}
-        onMouseEnter={(e) => (e.currentTarget.style.color = '#C99A3E')}
-        onMouseLeave={(e) => (e.currentTarget.style.color = 'rgba(255,255,255,0.5)')}
+        onClick={handleScrollDown}
+        role="button"
+        tabIndex={0}
+        aria-label="Scroll to discover Shrinivas Residency"
+        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleScrollDown(); }}
       >
         <span
           style={{
-            fontFamily: 'Inter, sans-serif',
-            fontSize: '0.55rem',
-            letterSpacing: '0.25em',
+            fontFamily: 'var(--font-sans)',
+            fontSize: '0.62rem',
+            fontWeight: 500,
+            letterSpacing: '0.2em',
             textTransform: 'uppercase',
+            color: 'rgba(255, 255, 255, 0.65)',
           }}
         >
-          Scroll
+          Explore Property
         </span>
-        <ChevronDown size={18} className="animate-scroll-bounce" />
-      </button>
+        <div className="animate-indicator-bounce">
+          <ChevronDown size={18} color="var(--color-gold)" strokeWidth={2} />
+        </div>
+      </div>
+
+      {/* Responsive layout styles */}
+      <style>{`
+        @media (min-width: 992px) {
+          .hero-grid-desktop {
+            grid-template-columns: 1.4fr 1fr !important;
+          }
+          .hero-floating-card-desktop {
+            display: flex !important;
+          }
+        }
+      `}</style>
     </section>
   );
 };

@@ -26,7 +26,9 @@ export interface HotelConfig {
   rating: number;
   reviewCount: number;
   phonePrimary: string;
+  phonePrimaryTel: string;
   phoneSecondary: string;
+  phoneSecondaryTel: string;
   whatsapp: string; // Set to confirmed number when available
   googleMapsUrl: string;
   googleReviewsUrl: string;
@@ -74,18 +76,19 @@ export const hotel: HotelConfig = {
   plusCode: '5M59+52 Bagalkot, Karnataka',
 
   rating: 4.5,
-  reviewCount: 74,
+  reviewCount: 75,
 
   // ── Contact ──────────────────────────────────────────────
   phonePrimary: '08354350125',    // Displayed as: 08354 350125
+  phonePrimaryTel: '+918354350125', // Clean international tel: target
   phoneSecondary: '9448946728',  // Displayed as: 94489 46728
+  phoneSecondaryTel: '+919448946728', // Clean international tel: target
   whatsapp: '',                  // Set when confirmed — do NOT assume either number
 
   // ── Google Integration ────────────────────────────────────
-  // Replace PLACE_ID_HERE with the actual Google Place ID
   googleMapsUrl: 'https://maps.google.com/?q=5M59%2B52+Bagalkot%2C+Karnataka',
   googleReviewsUrl:
-    'https://search.google.com/local/reviews?placeid=PLACE_ID_HERE',
+    'https://www.google.com/maps/search/?api=1&query=Shrinivas+Residency+Navanagar+Bagalkot',
   // Google Maps Embed URL for Shrinivas Residency, Bagalkot
   mapEmbedUrl:
     'https://maps.google.com/maps?q=Shrinivas+Residency%2C+Plot+No.+15-D%2C+Sector+No.+35%2C+Police+Palace+Circle%2C+Navanagar%2C+Bagalkot%2C+Karnataka+587103&t=&z=16&ie=UTF8&iwloc=&output=embed',
@@ -230,15 +233,15 @@ export const hotelImages = {
 };
 
 // ── Rooms ─────────────────────────────────────────────────────
-// Confirmed room data with actual hotel media
+// Confirmed room data with actual hotel media (Section 9)
 export const rooms = [
   {
     id: 'deluxe-double',
     name: 'Deluxe Double Room',
     description:
-      'Air-conditioned guest room featuring an upholstered headboard, king-sized bed, ambient ceiling lighting, and fresh linens.',
+      'Air-conditioned room with king-size bed, Wi-Fi, attached bathroom and LED TV.',
     image: hotelImages.rooms.room1,
-    features: ['Air Conditioned', 'King Size Bed', 'Free Wi-Fi', 'Attached Bathroom', 'LED TV'],
+    features: ['King Size Bed', 'Split AC', 'Free Wi-Fi', 'Attached Bathroom', 'LED TV'],
     alt: 'Deluxe double room with yellow headboard and ambient lighting at Shrinivas Residency',
     confirmed: true,
   },
@@ -246,21 +249,62 @@ export const rooms = [
     id: 'executive-room',
     name: 'Executive Room',
     description:
-      'Spacious room with signature embroidered SR pillows, premium roman blinds, bedside controls, and dedicated seating area.',
+      'Spacious room with signature SR details, seating area, AC and premium furnishings.',
     image: hotelImages.rooms.room2,
-    features: ['Signature SR Linens', 'Comfort Seating', 'Split AC', 'Roman Blinds', 'Room Service'],
+    features: ['Signature SR Details', 'Seating Area', 'Split AC', 'Premium Furnishings', 'Free Wi-Fi'],
     alt: 'Executive room with embroidered SR pillows and seating at Shrinivas Residency',
     confirmed: true,
   },
   {
-    id: 'comfort-double',
+    id: 'standard-double',
     name: 'Standard Double Room',
     description:
-      'Thoughtfully arranged double room with geometric linens, clean tiled flooring, wall TV console, and modern woodwork.',
+      'Comfortable double room with TV, housekeeping, hot water and ceiling fan.',
     image: hotelImages.rooms.room3,
     features: ['Double Bed', 'Flat-screen TV', 'Daily Housekeeping', '24/7 Hot Water', 'Ceiling Fan'],
     alt: 'Comfort double room with television and seating at Shrinivas Residency',
     confirmed: true,
+  },
+];
+
+// ── Featured Room Details (Section 10) ────────────────────────
+export const featuredRoomDetails = {
+  label: 'FEATURED ACCOMMODATION',
+  headline: 'COMFORT IN THE DETAILS',
+  description:
+    'Thoughtfully tailored guest spaces curated for calm rest and practical convenience during your visit to Bagalkot.',
+  image: hotelImages.rooms.roomWide,
+  highlights: [
+    'Comfortable bedding',
+    'Air conditioning',
+    'TV',
+    'Attached bathroom',
+    'Wi-Fi',
+    'Clean interiors',
+  ],
+};
+
+// ── Trust Strip Points (Section 7) ────────────────────────────
+export const trustPoints = [
+  {
+    icon: 'BedDouble',
+    title: 'Comfortable Rooms',
+    description: 'Thoughtfully maintained rooms for quiet, restful stays.',
+  },
+  {
+    icon: 'MapPin',
+    title: 'Convenient Location',
+    description: 'Police Palace Circle, Navanagar — easy city access.',
+  },
+  {
+    icon: 'HeartHandshake',
+    title: 'Guest-Friendly Service',
+    description: 'Attentive reception assistance to support your visit.',
+  },
+  {
+    icon: 'Car',
+    title: 'Easy Parking',
+    description: 'Hassle-free parking space available on premises.',
   },
 ];
 
@@ -272,42 +316,42 @@ export const amenities = [
     id: 'location',
     icon: 'MapPin',
     title: 'Convenient Location',
-    description: 'Near Police Palace Circle, Navanagar — easy access to the city.',
+    description: 'Near Police Palace Circle, Navanagar — easy access to the surrounding city.',
     visible: true,
   },
   {
     id: 'rooms',
     icon: 'BedDouble',
     title: 'Comfortable Rooms',
-    description: 'Well-maintained rooms for short and extended stays.',
+    description: 'Clean, well-maintained rooms for short and extended stays in Bagalkot.',
     visible: true,
   },
   {
     id: 'frontdesk',
     icon: 'Clock',
     title: 'Front Desk',
-    description: 'Reception assistance available for guest needs.',
+    description: 'Reception assistance available for guest inquiries and check-ins.',
     visible: true,
   },
   {
     id: 'wifi',
     icon: 'Wifi',
     title: 'Wi-Fi',
-    description: 'Connectivity for guests during their stay.',
+    description: 'Internet connectivity for guests throughout the property.',
     visible: true,
   },
   {
     id: 'parking',
     icon: 'Car',
     title: 'Parking',
-    description: 'Parking available for guests.',
+    description: 'Convenient on-site parking for guests arriving by vehicle.',
     visible: true,
   },
   {
     id: 'cleanliness',
     icon: 'Sparkles',
     title: 'Clean & Well-Maintained',
-    description: 'Regularly cleaned and maintained to ensure guest comfort.',
+    description: 'Daily housekeeping and regular upkeep ensuring comfortable living spaces.',
     visible: true,
   },
 ];
@@ -331,3 +375,14 @@ export function formatPhone(raw: string): string {
   if (digits.length === 11) return `${digits.slice(0, 5)} ${digits.slice(5)}`;
   return raw;
 }
+
+/** Formats a phone string into an international tel: URI, e.g. "08354350125" -> "tel:+918354350125" */
+export function telLink(raw: string): string {
+  if (!raw) return '';
+  const digits = raw.replace(/\D/g, '');
+  if (digits.startsWith('91') && digits.length === 12) return `tel:+${digits}`;
+  if (digits.length === 10) return `tel:+91${digits}`;
+  if (digits.length === 11 && digits.startsWith('0')) return `tel:+91${digits.slice(1)}`;
+  return `tel:+91${digits}`;
+}
+

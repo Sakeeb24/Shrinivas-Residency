@@ -1,77 +1,76 @@
 import React from 'react';
-import { MapPin, Navigation, Phone } from 'lucide-react';
+import { MapPin, Navigation, Phone, Compass } from 'lucide-react';
 import { hotel } from '../data/hotel';
-import { useScrollReveal, useIsMobile } from '../hooks/useHotel';
+import { useScrollReveal } from '../hooks/useHotel';
+import { use3DTilt } from '../hooks/use3D';
 
 const Location: React.FC = () => {
   useScrollReveal();
-  const isMobile = useIsMobile();
+  const { ref: cardRef, style: cardStyle, glare, handleMouseMove, handleMouseLeave } = use3DTilt<HTMLDivElement>(5, 1100);
 
   return (
     <section
       id="location"
-      style={{ padding: isMobile ? '4.5rem 1.25rem' : '6rem 1.5rem', backgroundColor: '#FAF8F3' }}
-      aria-label="Hotel location"
+      aria-label="Property location and directions"
+      style={{
+        padding: '7.5rem 1.5rem',
+        backgroundColor: '#FFFFFF',
+        borderTop: '1px solid var(--color-border-subtle)',
+      }}
     >
-      <div style={{ maxWidth: '1180px', margin: '0 auto' }}>
+      <div style={{ maxWidth: '1240px', margin: '0 auto' }}>
         {/* ── Section Header ───────────────────────────────── */}
-        <div className="reveal-hidden" style={{ textAlign: 'center', marginBottom: isMobile ? '2.5rem' : '3.5rem' }}>
-          <span
-            style={{
-              fontFamily: 'Inter, sans-serif',
-              fontSize: '0.65rem',
-              fontWeight: 700,
-              letterSpacing: '0.25em',
-              textTransform: 'uppercase',
-              color: '#7A1E1E',
-              display: 'block',
-              marginBottom: '0.5rem',
-            }}
-          >
-            Find Us
-          </span>
+        <div className="reveal-hidden" style={{ textAlign: 'center', marginBottom: '3.5rem' }}>
+          <div className="section-eyebrow with-lines" style={{ justifyContent: 'center' }}>
+            <span>FIND US</span>
+          </div>
+
           <h2
-            className="font-serif"
+            className="headline-serif"
             style={{
-              fontSize: 'clamp(2rem, 3.8vw, 2.75rem)',
-              fontWeight: 700,
-              color: '#172026',
-              lineHeight: 1.2,
+              fontSize: 'clamp(2.2rem, 4vw, 3.2rem)',
+              color: 'var(--color-charcoal)',
+              marginBottom: '0.85rem',
             }}
           >
-            Our Location
+            Finding Shrinivas Residency
           </h2>
-          <span
+
+          <p
             style={{
-              display: 'block',
-              width: '2.5rem',
-              height: '2px',
-              background: '#7A1E1E',
-              margin: '0.875rem auto 0',
-              opacity: 0.6,
+              fontFamily: 'var(--font-sans)',
+              fontSize: '1rem',
+              color: 'var(--color-text-muted)',
+              maxWidth: '520px',
+              margin: '0 auto',
             }}
-          />
+          >
+            Centrally situated at Police Palace Circle, Sector 35, Navanagar, Bagalkot.
+          </p>
+
+          <span className="gold-hairline gold-hairline-center" style={{ marginTop: '1.25rem' }} />
         </div>
 
-        {/* ── Map (60-65%) & Information Card (35-40%) ──────── */}
+        {/* ── Split-Screen 3D Location Section (Section 15) ── */}
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: isMobile ? '1fr' : '1.55fr 1fr',
-            gap: isMobile ? '1.5rem' : '2rem',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+            gap: '2.5rem',
             alignItems: 'stretch',
           }}
+          className="perspective-1000"
         >
-          {/* ── Map Container ───────────────────────────────── */}
+          {/* ── LEFT: Large Embedded Google Maps Area ───────── */}
           <div
             className="reveal-hidden"
             style={{
-              borderRadius: '1.25rem',
+              borderRadius: 'var(--radius-lg)',
               overflow: 'hidden',
-              border: '1px solid #E8E2D5',
-              boxShadow: '0 8px 30px rgba(11, 31, 42, 0.08)',
-              height: isMobile ? '320px' : '480px',
-              backgroundColor: '#FFFFFF',
+              border: '1px solid var(--color-border-subtle)',
+              boxShadow: 'var(--shadow-3d-card)',
+              minHeight: '450px',
+              backgroundColor: 'var(--color-surface-cream)',
               position: 'relative',
             }}
           >
@@ -80,318 +79,220 @@ const Location: React.FC = () => {
                 src={hotel.mapEmbedUrl}
                 width="100%"
                 height="100%"
-                style={{ border: 0, display: 'block' }}
+                style={{
+                  border: 0,
+                  display: 'block',
+                  minHeight: '450px',
+                  filter: 'saturate(0.95)',
+                }}
                 allowFullScreen
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
-                title="Shrinivas Residency location map"
-                aria-label="Google Map showing location of Shrinivas Residency in Bagalkot"
+                title="Shrinivas Residency Google Maps location in Bagalkot"
               />
             ) : (
-              /* Polished Fallback — never exposing developer messages */
               <div
                 style={{
                   width: '100%',
                   height: '100%',
-                  backgroundColor: '#FFFFFF',
                   display: 'flex',
                   flexDirection: 'column',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  gap: '1.25rem',
                   padding: '2rem',
                   textAlign: 'center',
                 }}
               >
-                <div
-                  style={{
-                    width: '3.5rem',
-                    height: '3.5rem',
-                    borderRadius: '50%',
-                    backgroundColor: 'rgba(122,30,30,0.08)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}
-                >
-                  <MapPin size={26} color="#7A1E1E" strokeWidth={1.75} />
-                </div>
-                <div>
-                  <h3
-                    className="font-serif"
-                    style={{
-                      fontSize: '1.4rem',
-                      fontWeight: 600,
-                      color: '#172026',
-                      marginBottom: '0.4rem',
-                    }}
-                  >
-                    View Our Location
-                  </h3>
-                  <p
-                    style={{
-                      fontFamily: 'Inter, sans-serif',
-                      fontSize: '0.85rem',
-                      color: '#6B7280',
-                      maxWidth: '280px',
-                      lineHeight: 1.6,
-                      margin: '0 auto',
-                    }}
-                  >
-                    Open Google Maps to view our exact location and get directions.
-                  </p>
-                </div>
+                <MapPin size={32} color="var(--color-gold-dark)" style={{ marginBottom: '1rem' }} />
+                <h3 className="headline-serif" style={{ fontSize: '1.4rem', marginBottom: '0.5rem' }}>
+                  Interactive Map
+                </h3>
                 <a
-                  href={hotel.googleMapsUrl}
+                  href="https://maps.google.com/?q=5M59%2B52+Bagalkot%2C+Karnataka"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="btn-primary"
-                  style={{ fontSize: '0.8rem', padding: '0.75rem 1.75rem' }}
+                  className="btn-gold-solid"
+                  style={{ marginTop: '1rem' }}
                 >
                   <Navigation size={14} />
-                  Open Google Maps
+                  Open in Google Maps
                 </a>
               </div>
             )}
           </div>
 
-          {/* ── Location Information Card ───────────────────── */}
+          {/* ── RIGHT: Verified Address Plinth (Section 15) ─── */}
           <div
-            className="reveal-hidden"
+            ref={cardRef}
+            onMouseMove={handleMouseMove}
+            onMouseLeave={handleMouseLeave}
+            className="reveal-hidden preserve-3d"
             style={{
-              backgroundColor: '#FFFFFF',
-              borderRadius: '1.25rem',
-              border: '1px solid #E8E2D5',
-              boxShadow: '0 8px 30px rgba(11, 31, 42, 0.08)',
-              padding: isMobile ? '1.75rem 1.5rem' : '2.25rem 2rem',
+              ...cardStyle,
+              backgroundColor: 'var(--color-surface-cream)',
+              border: '1px solid var(--color-border-subtle)',
+              borderRadius: 'var(--radius-lg)',
+              padding: 'clamp(2rem, 4vw, 3rem)',
               display: 'flex',
               flexDirection: 'column',
               justifyContent: 'space-between',
+              boxShadow: 'var(--shadow-3d-card)',
+              position: 'relative',
+              overflow: 'hidden',
             }}
           >
-            <div>
-              {/* Eyebrow & Name */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
-                <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#C99A3E' }} />
-                <span
-                  style={{
-                    fontFamily: 'Inter, sans-serif',
-                    fontSize: '0.65rem',
-                    fontWeight: 700,
-                    letterSpacing: '0.15em',
-                    textTransform: 'uppercase',
-                    color: '#7A1E1E',
-                  }}
-                >
-                  Bagalkot, Karnataka
-                </span>
-              </div>
-              <h3
-                className="font-serif"
-                style={{
-                  fontSize: '1.75rem',
-                  fontWeight: 700,
-                  color: '#172026',
-                  marginBottom: '0.75rem',
-                }}
-              >
-                {hotel.name}
-              </h3>
-              <p
-                style={{
-                  fontFamily: 'Inter, sans-serif',
-                  fontSize: '0.875rem',
-                  color: '#4B5563',
-                  lineHeight: 1.65,
-                  marginBottom: '1.5rem',
-                }}
-              >
-                Conveniently located in Navanagar, Bagalkot, Shrinivas Residency offers easy access to the city's key areas and local conveniences.
-              </p>
+            {/* Subtle Glare reflection */}
+            <div
+              aria-hidden="true"
+              style={{
+                position: 'absolute',
+                inset: 0,
+                pointerEvents: 'none',
+                background: `radial-gradient(circle at ${glare.x}% ${glare.y}%, rgba(255, 255, 255, ${glare.opacity}) 0%, transparent 60%)`,
+                transition: 'opacity 0.2s ease-out',
+                zIndex: 4,
+              }}
+            />
 
-              {/* Verified Address */}
+            <div className="layer-z-20">
+              <div className="section-eyebrow" style={{ marginBottom: '0.75rem' }}>
+                <span>NAVANAGAR · BAGALKOT</span>
+              </div>
+
+              {/* Exact Headline as specified in Section 15 */}
+              <h3
+                className="headline-serif"
+                style={{
+                  fontSize: 'clamp(1.8rem, 3.2vw, 2.5rem)',
+                  color: 'var(--color-charcoal)',
+                  marginBottom: '1.25rem',
+                }}
+              >
+                FIND US IN NAVANAGAR
+              </h3>
+
+              <span className="gold-hairline" style={{ marginBottom: '1.5rem' }} />
+
+              {/* Verified Address Block */}
               <div
                 style={{
                   display: 'flex',
+                  gap: '1rem',
                   alignItems: 'flex-start',
-                  gap: '0.875rem',
-                  padding: '1rem 1.1rem',
-                  backgroundColor: '#FAF8F3',
-                  borderRadius: '0.75rem',
-                  border: '1px solid #E8E2D5',
-                  marginBottom: '1rem',
+                  marginBottom: '1.75rem',
                 }}
               >
                 <div
                   style={{
-                    width: '2.25rem',
-                    height: '2.25rem',
-                    borderRadius: '0.5rem',
-                    backgroundColor: 'rgba(122,30,30,0.08)',
+                    width: '40px',
+                    height: '40px',
+                    borderRadius: 'var(--radius-sm)',
+                    backgroundColor: '#FFFFFF',
+                    border: '1px solid var(--color-border-subtle)',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                     flexShrink: 0,
                     marginTop: '2px',
+                    boxShadow: '0 2px 6px rgba(0,0,0,0.04)',
                   }}
                 >
-                  <MapPin size={17} color="#7A1E1E" strokeWidth={2} />
+                  <MapPin size={18} color="var(--color-gold-dark)" strokeWidth={1.8} />
                 </div>
-                <div>
-                  <span
-                    style={{
-                      display: 'block',
-                      fontFamily: 'Inter, sans-serif',
-                      fontSize: '0.62rem',
-                      fontWeight: 700,
-                      letterSpacing: '0.12em',
-                      textTransform: 'uppercase',
-                      color: '#9CA3AF',
-                      marginBottom: '0.2rem',
-                    }}
-                  >
-                    Address
-                  </span>
-                  <address
-                    style={{
-                      fontStyle: 'normal',
-                      fontFamily: 'Inter, sans-serif',
-                      fontSize: '0.84rem',
-                      color: '#172026',
-                      lineHeight: 1.6,
-                    }}
-                  >
-                    {hotel.address.plot}, {hotel.address.sector}, {hotel.address.landmark},<br />
-                    {hotel.address.locality}, {hotel.address.city},<br />
-                    {hotel.address.state} — {hotel.address.pincode}
-                  </address>
+
+                <div
+                  style={{
+                    fontFamily: 'var(--font-sans)',
+                    fontSize: '0.95rem',
+                    color: 'var(--color-charcoal)',
+                    lineHeight: 1.65,
+                  }}
+                >
+                  <p style={{ fontWeight: 600, color: 'var(--color-charcoal)' }}>Plot No. 15-D</p>
+                  <p>Sector No. 35</p>
+                  <p>Police Palace Circle</p>
+                  <p>Navanagar</p>
+                  <p style={{ fontWeight: 500 }}>Bagalkot, Karnataka — 587103</p>
                 </div>
               </div>
 
-              {/* Plus Code Badge */}
-              {hotel.plusCode && (
-                <div
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    padding: '0.65rem 1rem',
-                    backgroundColor: '#FAF8F3',
-                    borderRadius: '0.625rem',
-                    border: '1px solid #E8E2D5',
-                    marginBottom: '1.5rem',
-                  }}
-                >
+              {/* Plus Code Block */}
+              <div
+                style={{
+                  display: 'flex',
+                  gap: '1rem',
+                  alignItems: 'center',
+                  padding: '0.95rem 1.15rem',
+                  backgroundColor: '#FFFFFF',
+                  border: '1px solid var(--color-border-subtle)',
+                  borderRadius: 'var(--radius-sm)',
+                  marginBottom: '2rem',
+                  boxShadow: '0 2px 6px rgba(0,0,0,0.04)',
+                }}
+              >
+                <Compass size={18} color="var(--color-gold-dark)" strokeWidth={1.8} />
+                <div>
                   <span
                     style={{
-                      fontFamily: 'Inter, sans-serif',
-                      fontSize: '0.7rem',
+                      fontFamily: 'var(--font-sans)',
+                      fontSize: '0.68rem',
                       fontWeight: 600,
-                      color: '#6B7280',
-                      letterSpacing: '0.04em',
+                      letterSpacing: '0.12em',
+                      textTransform: 'uppercase',
+                      color: 'var(--color-text-muted)',
+                      display: 'block',
+                      lineHeight: 1,
+                      marginBottom: '2px',
                     }}
                   >
                     Google Plus Code
                   </span>
                   <span
                     style={{
-                      fontFamily: 'Inter, sans-serif',
-                      fontSize: '0.78rem',
+                      fontFamily: 'var(--font-sans)',
+                      fontSize: '0.9rem',
                       fontWeight: 600,
-                      color: '#172026',
+                      color: 'var(--color-charcoal)',
                     }}
                   >
-                    {hotel.plusCode}
+                    5M59+52 Bagalkot, Karnataka
                   </span>
                 </div>
-              )}
+              </div>
             </div>
 
-            {/* Action Buttons */}
+            {/* ── Actions: Open in Google Maps & Call Property ─── */}
             <div
+              className="layer-z-20"
               style={{
                 display: 'flex',
-                flexDirection: isMobile ? 'column' : 'row',
-                gap: '0.75rem',
-                marginTop: '0.5rem',
+                flexWrap: 'wrap',
+                gap: '1rem',
+                paddingTop: '1.25rem',
+                borderTop: '1px solid var(--color-border-subtle)',
               }}
             >
-              {/* Primary: Get Directions */}
+              {/* Primary Action: Open in Google Maps */}
               <a
-                href={hotel.googleMapsUrl}
+                href="https://maps.google.com/?q=5M59%2B52+Bagalkot%2C+Karnataka"
                 target="_blank"
                 rel="noopener noreferrer"
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '0.5rem',
-                  padding: '0.85rem 1.4rem',
-                  backgroundColor: '#7A1E1E',
-                  color: '#FFFFFF',
-                  fontFamily: 'Inter, sans-serif',
-                  fontSize: '0.78rem',
-                  fontWeight: 700,
-                  letterSpacing: '0.08em',
-                  textTransform: 'uppercase',
-                  borderRadius: '0.375rem',
-                  textDecoration: 'none',
-                  border: '1px solid #7A1E1E',
-                  transition: 'all 0.25s ease',
-                  flex: 1,
-                  textAlign: 'center',
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = '#5E1717';
-                  e.currentTarget.style.transform = 'translateY(-1px)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = '#7A1E1E';
-                  e.currentTarget.style.transform = 'none';
-                }}
+                className="btn-gold-solid"
+                style={{ flex: 1, minWidth: '170px', justifyContent: 'center' }}
               >
-                <Navigation size={14} />
-                Get Directions →
+                <Navigation size={15} />
+                Open in Google Maps
               </a>
 
-              {/* Secondary: Call Now */}
-              {hotel.phonePrimary && (
-                <a
-                  href={`tel:${hotel.phonePrimary}`}
-                  style={{
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: '0.5rem',
-                    padding: '0.85rem 1.25rem',
-                    backgroundColor: 'transparent',
-                    color: '#172026',
-                    fontFamily: 'Inter, sans-serif',
-                    fontSize: '0.78rem',
-                    fontWeight: 600,
-                    letterSpacing: '0.06em',
-                    textTransform: 'uppercase',
-                    borderRadius: '0.375rem',
-                    textDecoration: 'none',
-                    border: '1px solid #E8E2D5',
-                    transition: 'all 0.25s ease',
-                    textAlign: 'center',
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.borderColor = '#7A1E1E';
-                    e.currentTarget.style.color = '#7A1E1E';
-                    e.currentTarget.style.backgroundColor = 'rgba(122,30,30,0.04)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.borderColor = '#E8E2D5';
-                    e.currentTarget.style.color = '#172026';
-                    e.currentTarget.style.backgroundColor = 'transparent';
-                  }}
-                >
-                  <Phone size={14} />
-                  Call Now
-                </a>
-              )}
+              {/* Secondary Action: Call the Property */}
+              <a
+                href="tel:+918354350125"
+                className="btn-outline-dark"
+                style={{ flex: 1, minWidth: '170px', justifyContent: 'center' }}
+              >
+                <Phone size={15} color="var(--color-charcoal)" />
+                Call the Property
+              </a>
             </div>
           </div>
         </div>
